@@ -1,14 +1,38 @@
 <script setup lang="ts">
-// 헤더 셀 — 정렬 토글(라벨 클릭) + 우측 핸들 드래그 리사이즈.
-// React 원본(~/airgrid/src/HeaderCell.tsx)의 드래그 리오더 / 우클릭 필터
-// popover 는 후속 task(8) — 여기선 sort + resize 만.
+// 헤더 셀 — 정렬 토글(라벨 클릭) + 우측 핸들 드래그 리사이즈 + 필터 popover.
+// React 원본(~/airgrid/src/HeaderCell.tsx)의 드래그 리오더는 후속 task —
+// 여기선 sort + resize + 필터 버튼/popover(task 8) 만.
+import { ref, computed } from "vue";
 import { FlexRender, type Header } from "@tanstack/vue-table";
 import type { AirgridMeta } from "./types";
+import { isTextFilterActive, isNumberFilterActive } from "./filterFns";
+import HeaderFilterPopover from "./HeaderFilterPopover.vue";
 
 const props = defineProps<{ header: Header<any, unknown> }>();
 
 // 컬럼 폭 하한 — ColumnDef.minWidth 없으면 48px.
 const RESIZE_FLOOR = 48;
+
+const meta = computed(() => props.header.column.columnDef.meta as AirgridMeta | undefined);
+const filterType = computed(() => meta.value?.filterType);
+const filterOpen = ref(false);
+
+// 필터 "활성" 여부 — 헤더에 dot indicator 노출 판단.
+const filterActive = computed(() => {
+  const v = props.header.column.getFilterValue();
+  if (v == null) return false;
+  switch (filterType.value) {
+    case "text":        return isTextFilterActive(v);
+    case "numberRange":  return isNumberFilterActive(v);
+    case "select":       return Array.isArray(v) && v.length > 0;
+    case "boolean":      return v !== "any";
+    default:             return false;
+  }
+});
+
+function toggleFilter() {
+  filterOpen.value = !filterOpen.value;
+}
 
 function onLabelClick() {
   if (!props.header.column.getCanSort()) return;
@@ -56,6 +80,17 @@ function onResizeStart(e: PointerEvent) {
       <span v-if="header.column.getIsSorted() === 'asc'" class="airgrid-sort-indicator" aria-hidden="true">↑</span>
       <span v-else-if="header.column.getIsSorted() === 'desc'" class="airgrid-sort-indicator" aria-hidden="true">↓</span>
     </span>
+    <button
+      v-if="filterType"
+      type="button"
+      class="airgrid-filter-btn"
+      :class="{ 'airgrid-filter-btn-active': filterActive }"
+      aria-label="필터"
+      @click.stop="toggleFilter"
+    >
+      ▾
+      <span v-if="filterActive" class="airgrid-filter-dot" aria-hidden="true" />
+    </button>
     <span
       class="airgrid-resize-handle"
       role="separator"
@@ -64,6 +99,12 @@ function onResizeStart(e: PointerEvent) {
       title="드래그하여 컬럼 폭 조절"
       @pointerdown="onResizeStart"
       @click="(e) => e.stopPropagation()"
+    />
+    <HeaderFilterPopover
+      v-if="filterOpen"
+      :column="header.column"
+      :table="header.getContext().table"
+      @click.stop
     />
   </div>
 </template>
@@ -93,6 +134,29 @@ function onResizeStart(e: PointerEvent) {
 .airgrid-sort-indicator {
   font-size: 10px;
   color: var(--airgrid-sort-fg, #047857);
+}
+.airgrid-filter-btn {
+  position: relative;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--airgrid-empty-fg, #9ca3af);
+  cursor: pointer;
+  font-size: 10px;
+  line-height: 1;
+  padding: 2px 4px;
+}
+.airgrid-filter-btn-active {
+  color: var(--airgrid-active-fg, #4338ca);
+}
+.airgrid-filter-dot {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--airgrid-active-fg, #4338ca);
 }
 .airgrid-resize-handle {
   position: absolute;
