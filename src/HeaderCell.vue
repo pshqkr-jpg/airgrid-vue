@@ -2,7 +2,7 @@
 // 헤더 셀 — 정렬 토글(라벨 클릭) + 우측 핸들 드래그 리사이즈 + 필터 popover.
 // React 원본(~/airgrid/src/HeaderCell.tsx)의 드래그 리오더는 후속 task —
 // 여기선 sort + resize + 필터 버튼/popover(task 8) 만.
-import { ref, computed } from "vue";
+import { ref, computed, onBeforeUnmount } from "vue";
 import { FlexRender, type Header } from "@tanstack/vue-table";
 import type { AirgridMeta } from "./types";
 import { isTextFilterActive, isNumberFilterActive } from "./filterFns";
@@ -16,6 +16,7 @@ const RESIZE_FLOOR = 48;
 const meta = computed(() => props.header.column.columnDef.meta as AirgridMeta | undefined);
 const filterType = computed(() => meta.value?.filterType);
 const filterOpen = ref(false);
+const cellRoot = ref<HTMLElement | null>(null);
 
 // 필터 "활성" 여부 — 헤더에 dot indicator 노출 판단.
 const filterActive = computed(() => {
@@ -30,9 +31,32 @@ const filterActive = computed(() => {
   }
 });
 
-function toggleFilter() {
-  filterOpen.value = !filterOpen.value;
+// 외부 클릭 / Esc 으로 닫기 (React 원본 HeaderFilterPopover 의 mousedown/keydown
+// 리스너 포팅) — popover 가 열려 있는 동안만 document 에 붙였다 닫히면 뗀다.
+function onDocMousedown(e: MouseEvent) {
+  if (cellRoot.value && !cellRoot.value.contains(e.target as Node)) closeFilter();
 }
+function onDocKeydown(e: KeyboardEvent) {
+  if (e.key === "Escape") closeFilter();
+}
+function openFilter() {
+  filterOpen.value = true;
+  document.addEventListener("mousedown", onDocMousedown);
+  document.addEventListener("keydown", onDocKeydown);
+}
+function closeFilter() {
+  filterOpen.value = false;
+  document.removeEventListener("mousedown", onDocMousedown);
+  document.removeEventListener("keydown", onDocKeydown);
+}
+function toggleFilter() {
+  if (filterOpen.value) closeFilter();
+  else openFilter();
+}
+onBeforeUnmount(() => {
+  document.removeEventListener("mousedown", onDocMousedown);
+  document.removeEventListener("keydown", onDocKeydown);
+});
 
 function onLabelClick() {
   if (!props.header.column.getCanSort()) return;
@@ -69,7 +93,7 @@ function onResizeStart(e: PointerEvent) {
 </script>
 
 <template>
-  <div class="airgrid-header-cell-inner">
+  <div ref="cellRoot" class="airgrid-header-cell-inner">
     <span
       class="airgrid-header-label"
       role="button"

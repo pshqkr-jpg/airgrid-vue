@@ -9,6 +9,7 @@ import type {
   TextFilter, TextFilterOp,
   NumberFilter, NumberFilterOp,
 } from "./types";
+import { isTextFilterActive, isNumberFilterActive } from "./filterFns";
 
 const props = defineProps<{ column: Column<any, unknown>; table: Table<any> }>();
 
@@ -135,6 +136,19 @@ function onSelectChange(e: Event) {
 function resetFilter() {
   props.column.setFilterValue(undefined);
 }
+
+// "필터 초기화" 버튼 노출 판단 — HeaderCell 의 dot indicator 와 동일 기준.
+const active = computed(() => {
+  const v = props.column.getFilterValue();
+  if (v == null) return false;
+  switch (filterType.value) {
+    case "text":        return isTextFilterActive(v);
+    case "numberRange": return isNumberFilterActive(v);
+    case "select":      return Array.isArray(v) && v.length > 0;
+    case "boolean":     return v !== "any";
+    default:            return false;
+  }
+});
 </script>
 
 <template>
@@ -181,13 +195,12 @@ function resetFilter() {
       v-else-if="filterType === 'select'"
       multiple
       class="airgrid-filter-select airgrid-filter-multiselect"
-      :value="selectedValues"
       @change="onSelectChange"
     >
-      <option v-for="opt in selectOptions" :key="opt" :value="opt">{{ opt }}</option>
+      <option v-for="opt in selectOptions" :key="opt" :value="opt" :selected="selectedValues.includes(opt)">{{ opt }}</option>
     </select>
 
-    <button type="button" class="airgrid-filter-reset" @click="resetFilter">필터 초기화</button>
+    <button v-if="active" type="button" class="airgrid-filter-reset" @click="resetFilter">필터 초기화</button>
   </div>
 </template>
 
