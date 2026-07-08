@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="TRow extends Record<string, any>">
 // airgrid DataGrid 코어 — 가상 스크롤 + CSS grid + vue-table 바인딩.
-// 필터/정렬 UI, hide 메뉴, 컬럼 reorder 는 후속 task 에서 추가.
+// 정렬 패널, 컬럼 reorder 는 후속 task 에서 추가.
 import { ref, computed, watch, shallowRef } from "vue";
 import { useVueTable, getCoreRowModel, getFilteredRowModel, getSortedRowModel,
   FlexRender, type ColumnDef as TSCol, type CellContext, type SortingState, type ColumnFiltersState,
@@ -11,6 +11,7 @@ import { pickFilterFn } from "./filterFns";
 import { loadState, saveState, type PersistedState } from "./persistence";
 import EditableCell from "./EditableCell.vue";
 import HeaderCell from "./HeaderCell.vue";
+import HideColumnsMenu from "./HideColumnsMenu.vue";
 
 // column.columnDef.meta 에 실제로 박아 넣는 필드 — AirgridMeta(정렬/폭/필터) +
 // editable(후속 편집 task 용). cell 은 top-level columnDef.cell 로 옮겨졌으니
@@ -114,6 +115,9 @@ const visibleRows = computed(() => {
 </script>
 
 <template>
+  <div class="airgrid-toolbar">
+    <HideColumnsMenu :table="table" />
+  </div>
   <div ref="scrollEl" class="airgrid" :style="{ height: containerHeight, overflow: 'auto', position: 'relative' }" role="grid">
     <div
       class="airgrid-header-row"
@@ -159,6 +163,11 @@ const visibleRows = computed(() => {
 </template>
 
 <style scoped>
+.airgrid-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
 .airgrid {
   background: var(--airgrid-bg, #ffffff);
   border: 1px solid var(--airgrid-border, #e5e7eb);
