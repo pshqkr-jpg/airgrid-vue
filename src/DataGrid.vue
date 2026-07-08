@@ -10,6 +10,7 @@ import type { ColumnDef, ViewState, AirgridMeta } from "./types";
 import { pickFilterFn } from "./filterFns";
 import { loadState, saveState, type PersistedState } from "./persistence";
 import EditableCell from "./EditableCell.vue";
+import HeaderCell from "./HeaderCell.vue";
 
 // column.columnDef.meta 에 실제로 박아 넣는 필드 — AirgridMeta(정렬/폭/필터) +
 // editable(후속 편집 task 용). cell 은 top-level columnDef.cell 로 옮겨졌으니
@@ -63,6 +64,9 @@ const table = useVueTable({
   onColumnSizingChange: (u) => { columnSizing.value = typeof u === "function" ? u(columnSizing.value) : u; },
   getCoreRowModel: getCoreRowModel(), getFilteredRowModel: getFilteredRowModel(), getSortedRowModel: getSortedRowModel(),
   getRowId: (r) => String((r as any)[props.rowKey]),
+  // TanStack 기본값은 숫자 컬럼을 desc-first 로 토글 — 그리드 관례(오름차순 먼저)에
+  // 맞춰 모든 컬럼을 asc-first 로 통일.
+  sortDescFirst: false,
 });
 
 watch([sorting, columnFilters, columnVisibility, columnOrder, columnSizing], () => {
@@ -78,9 +82,15 @@ const containerHeight = computed(() =>
   typeof props.height === "number" ? `${props.height}px` : (props.height ?? "600px"));
 
 // 헤더 row 와 각 body row 가 같은 컬럼 폭을 써야 정렬이 맞음 — 한 곳에서만 계산.
+// 사용자가 헤더 리사이즈 핸들로 드래그해 columnSizing 에 값을 넣으면 그 폭을
+// 우선 사용 — 없는 컬럼은 기존 ColumnDef.width(또는 기본 minmax) 로 폴백.
 const gridTemplateColumns = computed(() =>
   table.getVisibleLeafColumns()
-    .map((c) => (c.columnDef.meta as AirgridMeta | undefined)?.width ?? "minmax(80px, 1fr)")
+    .map((c) => {
+      const sized = columnSizing.value[c.id];
+      if (sized != null) return `${sized}px`;
+      return (c.columnDef.meta as AirgridMeta | undefined)?.width ?? "minmax(80px, 1fr)";
+    })
     .join(" "));
 
 const scrollEl = shallowRef<HTMLElement | null>(null);
@@ -117,7 +127,7 @@ const visibleRows = computed(() => {
         role="columnheader"
         :style="{ textAlign: (header.column.columnDef.meta as AirgridMeta | undefined)?.align === 'right' ? 'right' : 'left' }"
       >
-        <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header" :props="header.getContext()" />
+        <HeaderCell v-if="!header.isPlaceholder" :header="header" />
       </div>
     </div>
 
