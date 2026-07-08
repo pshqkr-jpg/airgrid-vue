@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="TRow extends Record<string, any>">
 // airgrid DataGrid 코어 — 가상 스크롤 + CSS grid + vue-table 바인딩.
-// 컬럼 reorder 는 후속 task 에서 추가.
+// 컬럼 reorder 는 네이티브 HTML5 드래그앤드롭(@dnd-kit 미사용) — 아래 onHeaderDragStart/onDropColumn.
 import { ref, computed, watch, shallowRef } from "vue";
 import { useVueTable, getCoreRowModel, getFilteredRowModel, getSortedRowModel,
   FlexRender, type ColumnDef as TSCol, type CellContext, type SortingState, type ColumnFiltersState,
@@ -113,6 +113,34 @@ const visibleRows = computed(() => {
   }
   return items.map((vi) => ({ key: vi.key, index: vi.index, start: vi.start, row: allRows[vi.index] }));
 });
+
+// dnd-kit 없이 표준 arrayMove(splice-out at from, splice-in at to) — from/to 는
+// splice 순서 그대로의 raw index(두 번째 splice 는 이미 한 칸 줄어든 배열 기준).
+function arrayMove<T>(arr: T[], from: number, to: number): T[] {
+  const next = arr.slice();
+  const [moved] = next.splice(from, 1);
+  next.splice(to, 0, moved);
+  return next;
+}
+
+// 헤더 드래그 시작 — 옮길 컬럼 id 를 dataTransfer 에 담는다.
+function onHeaderDragStart(e: DragEvent, columnId: string) {
+  e.dataTransfer?.setData("text/col", columnId);
+}
+
+// 드롭 대상 헤더에서 실행 — columnOrder 가 비어 있으면(정의 순서 그대로 사용 중)
+// 현재 leaf 컬럼 순서로 먼저 시딩한 뒤 옮긴다.
+function onDropColumn(e: DragEvent, targetColumnId: string) {
+  const fromId = e.dataTransfer?.getData("text/col");
+  if (!fromId || fromId === targetColumnId) return;
+  const order = columnOrder.value.length
+    ? [...columnOrder.value]
+    : table.getAllLeafColumns().map((c) => c.id);
+  const fromIndex = order.indexOf(fromId);
+  const toIndex = order.indexOf(targetColumnId);
+  if (fromIndex === -1 || toIndex === -1) return;
+  table.setColumnOrder(arrayMove(order, fromIndex, toIndex));
+}
 </script>
 
 <template>
@@ -131,7 +159,11 @@ const visibleRows = computed(() => {
         :key="header.id"
         :data-col="header.column.id"
         role="columnheader"
+        draggable="true"
         :style="{ textAlign: (header.column.columnDef.meta as AirgridMeta | undefined)?.align === 'right' ? 'right' : 'left' }"
+        @dragstart="onHeaderDragStart($event, header.column.id)"
+        @dragover.prevent
+        @drop="onDropColumn($event, header.column.id)"
       >
         <HeaderCell v-if="!header.isPlaceholder" :header="header" />
       </div>
