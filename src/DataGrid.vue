@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="TRow extends Record<string, any>">
 // airgrid DataGrid 코어 — 가상 스크롤 + CSS grid + vue-table 바인딩.
 // 컬럼 reorder 는 네이티브 HTML5 드래그앤드롭(@dnd-kit 미사용) — 아래 onHeaderDragStart/onDropColumn.
-import { ref, computed, watch, shallowRef } from "vue";
+import { ref, computed, watch, shallowRef, useSlots } from "vue";
 import { useVueTable, getCoreRowModel, getFilteredRowModel, getSortedRowModel,
   FlexRender, type ColumnDef as TSCol, type CellContext, type SortingState, type ColumnFiltersState,
   type VisibilityState, type ColumnOrderState, type ColumnSizingState } from "@tanstack/vue-table";
@@ -29,6 +29,21 @@ const emit = defineEmits<{
   rowClick: [row: TRow];
   "update:viewState": [v: ViewState];
 }>();
+
+// #cell-[id] 스코프드 슬롯 우선순위 체크용. 있으면 editable/columnDef.cell 보다
+// 먼저 그 슬롯으로 렌더 — 호스트 앱이 특정 셀만 완전히 갈아끼우고 싶을 때 사용.
+const slots = useSlots();
+function hasCellSlot(columnId: string) {
+  return !!slots[`cell-${columnId}`];
+}
+
+// 편집 중(EditableCell)인 셀 클릭은 이미 그 자체로 편집 진입 액션이니 rowClick
+// 을 또 쏘지 않음 — 단, #cell-[id] 슬롯이 있으면 표시용 셀로 취급해 emit.
+function onCellClick(cell: { column: { id: string; columnDef: { meta?: CellMeta } } }, row: TRow) {
+  const editable = cell.column.columnDef.meta?.editable && !hasCellSlot(cell.column.id);
+  if (editable) return;
+  emit("rowClick", row);
+}
 
 const init = props.filterPersistKey ? loadState(props.filterPersistKey) : null;
 const sorting = ref<SortingState>(init?.sorting ?? props.viewState?.sorting ?? []);
@@ -180,15 +195,25 @@ function onDropColumn(e: DragEvent, targetColumnId: string) {
         <div
           v-for="cell in item.row.getVisibleCells()"
           :key="cell.id"
+          :data-col="cell.column.id"
           role="gridcell"
           :style="{ textAlign: (cell.column.columnDef.meta as AirgridMeta | undefined)?.align === 'right' ? 'right' : 'left' }"
+          @click="onCellClick(cell, item.row.original)"
         >
-          <FlexRender v-if="cell.column.columnDef.cell" :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+          <slot
+            v-if="hasCellSlot(cell.column.id)"
+            :name="'cell-' + cell.column.id"
+            :row="item.row.original"
+            :value="cell.getValue()"
+            :column="cell.column"
+            :cell="cell"
+          />
           <EditableCell
             v-else-if="(cell.column.columnDef.meta as CellMeta | undefined)?.editable"
             :model-value="cell.getValue()"
             @commit="(v) => emit('cellEdit', item.row.id, cell.column.id, v)"
           />
+          <FlexRender v-else-if="cell.column.columnDef.cell" :render="cell.column.columnDef.cell" :props="cell.getContext()" />
           <template v-else>{{ cell.getValue() }}</template>
         </div>
       </div>

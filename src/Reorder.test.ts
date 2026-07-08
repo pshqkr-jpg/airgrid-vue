@@ -20,7 +20,9 @@ describe("column reorder (native HTML5 DnD)", () => {
         height: 300,
       },
     });
-    const heads = () => w.findAll("[data-col]").map((h) => h.attributes("data-col"));
+    // 셀 클릭(rowClick) 지원을 위해 body cell 도 이제 data-col 을 갖게 됐으니
+    // 헤더 행으로 스코프 — 아니면 body cell 까지 같이 잡혀 개수가 안 맞음.
+    const heads = () => w.findAll(".airgrid-header-row [data-col]").map((h) => h.attributes("data-col"));
     expect(heads()).toEqual(["a", "b"]);
 
     const store: Record<string, string> = {};
