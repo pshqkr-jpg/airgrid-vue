@@ -3,12 +3,17 @@
 // 필터/정렬 UI, 편집, hide 메뉴, 컬럼 reorder 는 후속 task 에서 추가.
 import { ref, computed, watch, shallowRef } from "vue";
 import { useVueTable, getCoreRowModel, getFilteredRowModel, getSortedRowModel,
-  FlexRender, type ColumnDef as TSCol, type SortingState, type ColumnFiltersState,
+  FlexRender, type ColumnDef as TSCol, type CellContext, type SortingState, type ColumnFiltersState,
   type VisibilityState, type ColumnOrderState, type ColumnSizingState } from "@tanstack/vue-table";
 import { useVirtualizer } from "@tanstack/vue-virtual";
 import type { ColumnDef, ViewState, AirgridMeta } from "./types";
 import { pickFilterFn } from "./filterFns";
-import { loadState, saveState } from "./persistence";
+import { loadState, saveState, type PersistedState } from "./persistence";
+
+// column.columnDef.meta 에 실제로 박아 넣는 필드 — AirgridMeta(정렬/폭/필터) +
+// editable(후속 편집 task 용). cell 은 top-level columnDef.cell 로 옮겨졌으니
+// 여기엔 없음 — 이 타입이 meta 를 정직하게 서술(excess-property 은폐 ✗).
+type CellMeta = AirgridMeta & { editable?: boolean };
 
 const props = defineProps<{
   data: TRow[]; columns: ColumnDef<TRow>[]; rowKey: keyof TRow & string;
@@ -26,14 +31,20 @@ const sorting = ref<SortingState>(init?.sorting ?? props.viewState?.sorting ?? [
 const columnFilters = ref<ColumnFiltersState>(init?.columnFilters ?? props.viewState?.columnFilters ?? []);
 const columnVisibility = ref<VisibilityState>(init?.columnVisibility
   ?? Object.fromEntries(props.columns.filter(c => c.defaultVisible === false).map(c => [c.id, false])));
-const columnOrder = ref<ColumnOrderState>(init?.columnOrder ?? props.columns.map(c => c.id));
+const columnOrder = ref<ColumnOrderState>(init?.columnOrder ?? []);
 const columnSizing = ref<ColumnSizingState>(init?.columnSizing ?? {});
 
 const tsColumns = computed<TSCol<TRow>[]>(() => props.columns.map((c) => ({
   id: c.id, accessorKey: c.accessorKey, header: c.header,
+  // c.cell 은 row 전체를 받는 우리 시그니처 — TanStack 의 CellContext 어댑터로 감쌈.
+  // 없으면 undefined 로 둬 template 이 raw value(cell.getValue()) 로 폴백.
+  cell: c.cell ? (ctx: CellContext<TRow, unknown>) => c.cell!(ctx.row.original) : undefined,
   enableSorting: c.sortable !== false,
   filterFn: pickFilterFn(c.filterType) as any,
-  meta: { align: c.align, width: c.width, minWidth: c.minWidth, filterType: c.filterType, selectOptions: c.selectOptions, editable: c.editable, cell: c.cell } as AirgridMeta,
+  meta: {
+    align: c.align, width: c.width, minWidth: c.minWidth,
+    filterType: c.filterType, selectOptions: c.selectOptions, editable: c.editable,
+  } satisfies CellMeta,
 })));
 
 const table = useVueTable({
@@ -56,9 +67,20 @@ const table = useVueTable({
 watch([sorting, columnFilters, columnVisibility, columnOrder, columnSizing], () => {
   const v: ViewState = { sorting: sorting.value, columnFilters: columnFilters.value,
     columnVisibility: columnVisibility.value, columnOrder: columnOrder.value, columnSizing: columnSizing.value };
-  if (props.filterPersistKey) saveState(props.filterPersistKey, v as any);
+  if (props.filterPersistKey) saveState(props.filterPersistKey, v as PersistedState);
   emit("update:viewState", v);
 }, { deep: true });
+
+// Vue :style 는 숫자에 자동으로 "px" 를 안 붙임(React 와 다름) — unitless 숫자를
+// CSSOM 이 그대로 거부해 height 가 안 먹고 virtualizer 가 무한정 render-all 됨.
+const containerHeight = computed(() =>
+  typeof props.height === "number" ? `${props.height}px` : (props.height ?? "600px"));
+
+// 헤더 row 와 각 body row 가 같은 컬럼 폭을 써야 정렬이 맞음 — 한 곳에서만 계산.
+const gridTemplateColumns = computed(() =>
+  table.getVisibleLeafColumns()
+    .map((c) => (c.columnDef.meta as AirgridMeta | undefined)?.width ?? "minmax(80px, 1fr)")
+    .join(" "));
 
 const scrollEl = shallowRef<HTMLElement | null>(null);
 const rowVirtualizer = useVirtualizer(computed(() => ({
@@ -81,11 +103,11 @@ const visibleRows = computed(() => {
 </script>
 
 <template>
-  <div ref="scrollEl" class="airgrid" :style="{ height: props.height ?? 600, overflow: 'auto', position: 'relative' }" role="grid">
+  <div ref="scrollEl" class="airgrid" :style="{ height: containerHeight, overflow: 'auto', position: 'relative' }" role="grid">
     <div
       class="airgrid-header-row"
       role="row"
-      :style="{ display: 'grid', gridTemplateColumns: table.getVisibleLeafColumns().map(c => (c.columnDef.meta as AirgridMeta | undefined)?.width ?? 'minmax(80px, 1fr)').join(' '), position: 'sticky', top: 0 }"
+      :style="{ display: 'grid', gridTemplateColumns, position: 'sticky', top: 0 }"
     >
       <div
         v-for="header in table.getHeaderGroups()[0]?.headers ?? []"
@@ -104,7 +126,7 @@ const visibleRows = computed(() => {
         :key="item.row.id"
         :data-row="item.row.id"
         role="row"
-        :style="{ position: 'absolute', top: 0, left: 0, width: '100%', transform: `translateY(${item.start}px)`, display: 'grid', gridTemplateColumns: table.getVisibleLeafColumns().map(c => (c.columnDef.meta as AirgridMeta | undefined)?.width ?? 'minmax(80px, 1fr)').join(' ') }"
+        :style="{ position: 'absolute', top: 0, left: 0, width: '100%', transform: `translateY(${item.start}px)`, display: 'grid', gridTemplateColumns }"
       >
         <div
           v-for="cell in item.row.getVisibleCells()"
