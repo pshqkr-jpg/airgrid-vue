@@ -70,6 +70,8 @@ Custom cell rendering: use `ColumnDef.cell` for a render function, or the `#cell
 
 Pass `filterPersistKey` to persist sorting / column filters / visibility / order / sizing to `localStorage` under that key. Omit it (and drive `viewState` + `@update:viewState` yourself) if you'd rather persist views server-side. `clearPersistedState(key)` is exported to reset a saved view.
 
+`viewState` is one-way, not a true `v-model`: it seeds the grid's *initial* state on mount, and the grid emits `update:viewState` whenever sorting/filters/visibility/order/sizing change. Changing the `viewState` prop after mount is **not** applied reactively. To switch to a different saved view at runtime, remount the grid with a changed `:key` (e.g. `:key="currentViewId"`).
+
 ## Status
 
 Pre-1.0. Vue port of `airgrid`, tracking feature parity with the React version.

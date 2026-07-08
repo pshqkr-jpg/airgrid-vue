@@ -43,4 +43,18 @@ describe("DataGrid render", () => {
     const w = mount(DataGrid, { props: { data: rows, columns: colsForMount, rowKey: "id" } });
     expect(w.find('[role="grid"]').attributes("style")).toContain("height: 600px");
   });
+
+  it("honors columnVisibility/columnOrder/columnSizing from the viewState prop at init", () => {
+    const w = mount(DataGrid, {
+      props: {
+        data: rows, columns: colsForMount, rowKey: "id", height: 400,
+        viewState: {
+          sorting: [], columnFilters: [],
+          columnVisibility: { name: false }, columnOrder: [], columnSizing: {},
+        },
+      },
+    });
+    expect(w.find('[data-col="name"]').exists()).toBe(false);
+    expect(w.find('[data-col="qty"]').exists()).toBe(true);
+  });
 });

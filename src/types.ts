@@ -30,13 +30,6 @@ export type ColumnDef<TRow> = {
   minWidth?: number;
   /** 정렬 가능 여부. 기본 true. */
   sortable?: boolean;
-  /**
-   * 같은 값이 연속될 때 그룹 첫 행에만 값을 표시(셀 병합처럼)하고 나머지는 비움.
-   * 이 컬럼으로 1차 정렬(sorting[0]) 됐을 때만 적용 — 다른 컬럼 정렬 시엔 일반 표시.
-   * 그룹마다 배경 틴트 교대 + 그룹 첫 행 윗 테두리로 묶음을 시각화.
-   * 가상 스크롤 유지(병합 셀이 아니라 "그룹 첫 행만 표시" 방식).
-   */
-  spanGroup?: boolean;
 };
 
 /** TanStack Table column.meta 에 박는 airgrid 메타 정보. */
@@ -80,6 +73,12 @@ export type NumberFilter = {
 // ViewState — DataGrid 의 사용자 설정 (정렬 / 필터 / 보이는 컬럼 /
 // 컬럼 순서 / 컬럼 폭). 호스트 앱이 영속화 (서버 또는 localStorage) 한 후
 // DataGrid 에 주입.
+//
+// 단방향(one-way) 계약 — v-model 아님: viewState prop 은 마운트 시점의
+// 초기 상태만 시딩하고, 이후 사용자의 조작은 update:viewState 로 emit 된다.
+// 마운트 이후 viewState prop 을 바꿔도 그리드에 반응적으로 반영되지 않는다
+// (emit ↔ prop 갱신 피드백 루프를 피하기 위한 설계). 런타임에 다른 저장된
+// 뷰로 전환하려면 :key 를 바꿔 그리드를 remount 해야 한다.
 
 import type {
   SortingState,

@@ -48,10 +48,10 @@ function onCellClick(cell: { column: { id: string; columnDef: { meta?: CellMeta 
 const init = props.filterPersistKey ? loadState(props.filterPersistKey) : null;
 const sorting = ref<SortingState>(init?.sorting ?? props.viewState?.sorting ?? []);
 const columnFilters = ref<ColumnFiltersState>(init?.columnFilters ?? props.viewState?.columnFilters ?? []);
-const columnVisibility = ref<VisibilityState>(init?.columnVisibility
+const columnVisibility = ref<VisibilityState>(init?.columnVisibility ?? props.viewState?.columnVisibility
   ?? Object.fromEntries(props.columns.filter(c => c.defaultVisible === false).map(c => [c.id, false])));
-const columnOrder = ref<ColumnOrderState>(init?.columnOrder ?? []);
-const columnSizing = ref<ColumnSizingState>(init?.columnSizing ?? {});
+const columnOrder = ref<ColumnOrderState>(init?.columnOrder ?? props.viewState?.columnOrder ?? []);
+const columnSizing = ref<ColumnSizingState>(init?.columnSizing ?? props.viewState?.columnSizing ?? {});
 
 const tsColumns = computed<TSCol<TRow>[]>(() => props.columns.map((c) => ({
   id: c.id, accessorKey: c.accessorKey, header: c.header,

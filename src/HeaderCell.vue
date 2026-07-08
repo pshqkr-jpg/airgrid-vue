@@ -56,6 +56,7 @@ function toggleFilter() {
 onBeforeUnmount(() => {
   document.removeEventListener("mousedown", onDocMousedown);
   document.removeEventListener("keydown", onDocKeydown);
+  stopResize?.();
 });
 
 function onLabelClick() {
@@ -65,7 +66,9 @@ function onLabelClick() {
 
 // pointerdown 에서 시작 X / 시작 폭을 캡처, pointermove 로 table 의
 // columnSizing 을 갱신, pointerup 에서 리스너 정리. minWidth(메타) 또는
-// 48px 하한으로 클램프.
+// 48px 하한으로 클램프. stopResize 는 드래그 도중 헤더가 unmount 되는 경우
+// (컬럼 hide/reorder 등) window 리스너가 남지 않도록 onBeforeUnmount 에서도 호출.
+let stopResize: (() => void) | null = null;
 function onResizeStart(e: PointerEvent) {
   e.stopPropagation();
   e.preventDefault();
@@ -82,11 +85,16 @@ function onResizeStart(e: PointerEvent) {
     const next = Math.max(minWidth, startSize + (ev.clientX - startX));
     table.setColumnSizing((old) => ({ ...old, [header.column.id]: next }));
   }
-  function onEnd(ev: PointerEvent) {
-    target.releasePointerCapture?.(ev.pointerId);
+  function cleanup() {
+    stopResize = null;
     window.removeEventListener("pointermove", onMove);
     window.removeEventListener("pointerup", onEnd);
   }
+  function onEnd(ev: PointerEvent) {
+    target.releasePointerCapture?.(ev.pointerId);
+    cleanup();
+  }
+  stopResize = cleanup;
   window.addEventListener("pointermove", onMove);
   window.addEventListener("pointerup", onEnd);
 }

@@ -14,3 +14,16 @@ Task 9: complete (commit 12ecdb0, HideColumnsMenu; 22/22, vue-tsc 0, controller-
 Task 10: complete (commit 776a313, SortPriorityPanel; 23/23, vue-tsc 0, controller-verified). Multi-sort already worked pre-panel. Self-contained (matches HideColumnsMenu pattern) vs React's anchor/onClose.
 Task 11: complete (commit 64472ed, native HTML5 column reorder, no @dnd-kit; 24/24, vue-tsc 0, controller-verified). arrayMove helper, seeds columnOrder from def order first reorder.
 Task 12: complete (commit ea3936d, rowClick + cell slot/render-fn; 27/27, vue-tsc 0, controller-verified). Fixed test bug (h from vue not @vue/test-utils); added data-col to body cells + scoped Reorder test selector to header row.
+Task 13: complete (commit b1c26b5, export/build/README; 27/27, vue-tsc 0, build OK). DEVIATION: tsup broken for scoped-<style> SFCs (unplugin-vue virtual CSS intercept) → switched to vite lib build + vue-tsc dts; added skipLibCheck (vitest nested vite node types); added ./style.css export.
+
+=== airgrid-vue: ALL 13 TASKS COMPLETE. 27 tests, vue-tsc 0, builds. Pending: final whole-branch review, then spec ①. ===
+
+=== FINAL REVIEW (opus) findings ===
+Fixing now: Important #1 (viewState init drops 3 slices — real bug), #2 (viewState one-way → document), #3 (spanGroup unimplemented → remove from type), resize pointer-listener leak.
+Deferred minors (post-merge, do NOT block /members which uses filterPersistKey not viewState):
+ - #4 no render-time clamp of columnSizing to minWidth
+ - #5 reorder can't move a newly-added column (indexOf -1 no-op; React merges missing cols)
+ - #6 resize start-size uses getSize() 150 default not rendered width → first-drag jump
+ - #8 filterPersistKey + viewState collide (both active) rather than one deferring
+ - #9 popover autofocus attr doesn't fire on v-if mount (use ref+.focus())
+ - cellEdit on number columns emits string (doc says number|string|null) — note in docs
