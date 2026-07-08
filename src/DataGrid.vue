@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="TRow extends Record<string, any>">
 // airgrid DataGrid 코어 — 가상 스크롤 + CSS grid + vue-table 바인딩.
-// 필터/정렬 UI, 편집, hide 메뉴, 컬럼 reorder 는 후속 task 에서 추가.
+// 필터/정렬 UI, hide 메뉴, 컬럼 reorder 는 후속 task 에서 추가.
 import { ref, computed, watch, shallowRef } from "vue";
 import { useVueTable, getCoreRowModel, getFilteredRowModel, getSortedRowModel,
   FlexRender, type ColumnDef as TSCol, type CellContext, type SortingState, type ColumnFiltersState,
@@ -9,6 +9,7 @@ import { useVirtualizer } from "@tanstack/vue-virtual";
 import type { ColumnDef, ViewState, AirgridMeta } from "./types";
 import { pickFilterFn } from "./filterFns";
 import { loadState, saveState, type PersistedState } from "./persistence";
+import EditableCell from "./EditableCell.vue";
 
 // column.columnDef.meta 에 실제로 박아 넣는 필드 — AirgridMeta(정렬/폭/필터) +
 // editable(후속 편집 task 용). cell 은 top-level columnDef.cell 로 옮겨졌으니
@@ -135,6 +136,11 @@ const visibleRows = computed(() => {
           :style="{ textAlign: (cell.column.columnDef.meta as AirgridMeta | undefined)?.align === 'right' ? 'right' : 'left' }"
         >
           <FlexRender v-if="cell.column.columnDef.cell" :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+          <EditableCell
+            v-else-if="(cell.column.columnDef.meta as CellMeta | undefined)?.editable"
+            :model-value="cell.getValue()"
+            @commit="(v) => emit('cellEdit', item.row.id, cell.column.id, v)"
+          />
           <template v-else>{{ cell.getValue() }}</template>
         </div>
       </div>
