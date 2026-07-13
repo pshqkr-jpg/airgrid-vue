@@ -223,7 +223,7 @@ const xe = /* @__PURE__ */ B({
       const a = o.target.value, f = x.value;
       a === "isEmpty" || a === "isNotEmpty" ? e.column.setFilterValue({ op: a }) : a === "between" ? e.column.setFilterValue({ op: a, min: f.min, max: f.max }) : e.column.setFilterValue({ op: a, value: f.value });
     }
-    function b(o) {
+    function h(o) {
       const a = o.target.value, f = a === "" ? void 0 : Number(a);
       e.column.setFilterValue({ op: "between", min: f, max: x.value.max });
     }
@@ -308,7 +308,7 @@ const xe = /* @__PURE__ */ B({
             autofocus: "",
             placeholder: "min",
             value: x.value.min ?? "",
-            onInput: b
+            onInput: h
           }, null, 40, Re),
           v("input", {
             type: "number",
@@ -377,29 +377,29 @@ const xe = /* @__PURE__ */ B({
   },
   setup(l) {
     const e = l, n = w(() => e.header.column.columnDef.meta), i = w(() => {
-      var b;
-      return (b = n.value) == null ? void 0 : b.filterType;
+      var h;
+      return (h = n.value) == null ? void 0 : h.filterType;
     }), g = P(!1), p = P(null), k = w(() => {
-      const b = e.header.column.getFilterValue();
-      if (b == null) return !1;
+      const h = e.header.column.getFilterValue();
+      if (h == null) return !1;
       switch (i.value) {
         case "text":
-          return Q(b);
+          return Q(h);
         case "numberRange":
-          return ee(b);
+          return ee(h);
         case "select":
-          return Array.isArray(b) && b.length > 0;
+          return Array.isArray(h) && h.length > 0;
         case "boolean":
-          return b !== "any";
+          return h !== "any";
         default:
           return !1;
       }
     });
-    function u(b) {
-      p.value && !p.value.contains(b.target) && y();
+    function u(h) {
+      p.value && !p.value.contains(h.target) && y();
     }
-    function m(b) {
-      b.key === "Escape" && y();
+    function m(h) {
+      h.key === "Escape" && y();
     }
     function D() {
       g.value = !0, document.addEventListener("mousedown", u), document.addEventListener("keydown", m);
@@ -417,11 +417,11 @@ const xe = /* @__PURE__ */ B({
       e.header.column.getCanSort() && e.header.column.toggleSorting();
     }
     let N = null;
-    function O(b) {
+    function O(h) {
       var f;
-      b.stopPropagation(), b.preventDefault();
-      const I = e.header, _ = I.getContext().table, V = I.column.columnDef.meta, c = (V == null ? void 0 : V.minWidth) ?? Xe, d = b.clientX, C = I.getSize(), F = b.currentTarget;
-      (f = F.setPointerCapture) == null || f.call(F, b.pointerId);
+      h.stopPropagation(), h.preventDefault();
+      const I = e.header, _ = I.getContext().table, V = I.column.columnDef.meta, c = (V == null ? void 0 : V.minWidth) ?? Xe, d = h.clientX, C = I.getSize(), F = h.currentTarget;
+      (f = F.setPointerCapture) == null || f.call(F, h.pointerId);
       function z(A) {
         const t = Math.max(c, C + (A.clientX - d));
         _.setColumnSizing(($) => ({ ...$, [I.column.id]: t }));
@@ -435,7 +435,7 @@ const xe = /* @__PURE__ */ B({
       }
       N = o, window.addEventListener("pointermove", z), window.addEventListener("pointerup", a);
     }
-    return (b, I) => (r(), s("div", {
+    return (h, I) => (r(), s("div", {
       ref_key: "cellRoot",
       ref: p,
       class: "airgrid-header-cell-inner"
@@ -516,7 +516,7 @@ const xe = /* @__PURE__ */ B({
       const _ = i.value.trim().toLowerCase();
       return _ ? y.value.filter((V) => String(V.columnDef.header).toLowerCase().includes(_)) : y.value;
     }), N = w(() => x.value.filter((_) => _.getIsVisible())), O = w(() => x.value.filter((_) => !_.getIsVisible()));
-    function b(_) {
+    function h(_) {
       var V;
       (V = e.table.getColumn(_)) == null || V.toggleVisibility();
     }
@@ -551,7 +551,7 @@ const xe = /* @__PURE__ */ B({
             type: "button",
             class: "airgrid-hide-item",
             "data-hide-toggle": c.id,
-            onClick: (d) => b(c.id)
+            onClick: (d) => h(c.id)
           }, [
             V[1] || (V[1] = v("span", {
               class: "airgrid-hide-marker airgrid-hide-marker-on",
@@ -567,7 +567,7 @@ const xe = /* @__PURE__ */ B({
             type: "button",
             class: "airgrid-hide-item",
             "data-hide-toggle": c.id,
-            onClick: (d) => b(c.id)
+            onClick: (d) => h(c.id)
           }, [
             V[2] || (V[2] = v("span", {
               class: "airgrid-hide-marker",
@@ -637,7 +637,7 @@ const xe = /* @__PURE__ */ B({
       const C = [...y.value], [F] = C.splice(c, 1);
       C.splice(d, 0, F), e.table.setSorting(C);
     }
-    function b(c) {
+    function h(c) {
       e.table.setSorting(y.value.map((d, C) => C === c ? { ...d, desc: !d.desc } : d));
     }
     function I(c) {
@@ -688,7 +688,7 @@ const xe = /* @__PURE__ */ B({
             v("button", {
               type: "button",
               class: "airgrid-sort-dir-btn",
-              onClick: (z) => b(F)
+              onClick: (z) => h(F)
             }, R(C.desc ? "↓ 내림차순" : "↑ 오름차순"), 9, mt),
             v("button", {
               type: "button",
@@ -728,7 +728,8 @@ const xe = /* @__PURE__ */ B({
     height: {},
     estimateRowHeight: {},
     filterPersistKey: {},
-    viewState: {}
+    viewState: {},
+    rowClass: { type: Function }
   },
   emits: ["cellEdit", "rowClick", "update:viewState"],
   setup(l, { emit: e }) {
@@ -738,8 +739,8 @@ const xe = /* @__PURE__ */ B({
       return !!g[`cell-${t}`];
     }
     function k(t, $) {
-      var h;
-      (h = t.column.columnDef.meta) != null && h.editable && !p(t.column.id) || i("rowClick", $);
+      var b;
+      (b = t.column.columnDef.meta) != null && b.editable && !p(t.column.id) || i("rowClick", $);
     }
     const u = n.filterPersistKey ? Ce(n.filterPersistKey) : null, m = P((u == null ? void 0 : u.sorting) ?? ((z = n.viewState) == null ? void 0 : z.sorting) ?? []), D = P((u == null ? void 0 : u.columnFilters) ?? ((o = n.viewState) == null ? void 0 : o.columnFilters) ?? []), y = P((u == null ? void 0 : u.columnVisibility) ?? ((a = n.viewState) == null ? void 0 : a.columnVisibility) ?? Object.fromEntries(n.columns.filter((t) => t.defaultVisible === !1).map((t) => [t.id, !1]))), L = P((u == null ? void 0 : u.columnOrder) ?? ((f = n.viewState) == null ? void 0 : f.columnOrder) ?? []), x = P((u == null ? void 0 : u.columnSizing) ?? ((A = n.viewState) == null ? void 0 : A.columnSizing) ?? {}), N = w(() => n.columns.map((t) => ({
       id: t.id,
@@ -815,7 +816,7 @@ const xe = /* @__PURE__ */ B({
       };
       n.filterPersistKey && Se(n.filterPersistKey, t), i("update:viewState", t);
     }, { deep: !0 });
-    const b = w(() => typeof n.height == "number" ? `${n.height}px` : n.height ?? "600px"), I = w(() => O.getVisibleLeafColumns().map((t) => {
+    const h = w(() => typeof n.height == "number" ? `${n.height}px` : n.height ?? "600px"), I = w(() => O.getVisibleLeafColumns().map((t) => {
       var E;
       const $ = x.value[t.id];
       return $ != null ? `${$}px` : ((E = t.columnDef.meta) == null ? void 0 : E.width) ?? "minmax(80px, 1fr)";
@@ -826,11 +827,11 @@ const xe = /* @__PURE__ */ B({
       overscan: 10
     }))), c = w(() => {
       const t = V.value.getVirtualItems(), $ = O.getRowModel().rows;
-      return t.length === 0 && $.length > 0 ? $.map((E, h) => ({ key: E.id, index: h, start: h * (n.estimateRowHeight ?? 36), row: E })) : t.map((E) => ({ key: E.key, index: E.index, start: E.start, row: $[E.index] }));
+      return t.length === 0 && $.length > 0 ? $.map((E, b) => ({ key: E.id, index: b, start: b * (n.estimateRowHeight ?? 36), row: E })) : t.map((E) => ({ key: E.key, index: E.index, start: E.start, row: $[E.index] }));
     });
     function d(t, $, E) {
-      const h = t.slice(), [S] = h.splice($, 1);
-      return h.splice(E, 0, S), h;
+      const b = t.slice(), [S] = b.splice($, 1);
+      return b.splice(E, 0, S), b;
     }
     function C(t, $) {
       var E;
@@ -840,8 +841,8 @@ const xe = /* @__PURE__ */ B({
       var q;
       const E = (q = t.dataTransfer) == null ? void 0 : q.getData("text/col");
       if (!E || E === $) return;
-      const h = L.value.length ? [...L.value] : O.getAllLeafColumns().map((G) => G.id), S = h.indexOf(E), H = h.indexOf($);
-      S === -1 || H === -1 || O.setColumnOrder(d(h, S, H));
+      const b = L.value.length ? [...L.value] : O.getAllLeafColumns().map((G) => G.id), S = b.indexOf(E), H = b.indexOf($);
+      S === -1 || H === -1 || O.setColumnOrder(d(b, S, H));
     }
     return (t, $) => {
       var E;
@@ -854,7 +855,7 @@ const xe = /* @__PURE__ */ B({
           ref_key: "scrollEl",
           ref: _,
           class: "airgrid",
-          style: W({ height: b.value, overflow: "auto", position: "relative" }),
+          style: W({ height: h.value, overflow: "auto", position: "relative" }),
           role: "grid"
         }, [
           v("div", {
@@ -862,22 +863,22 @@ const xe = /* @__PURE__ */ B({
             role: "row",
             style: W({ display: "grid", gridTemplateColumns: I.value, position: "sticky", top: 0 })
           }, [
-            (r(!0), s(M, null, K(((E = j(O).getHeaderGroups()[0]) == null ? void 0 : E.headers) ?? [], (h) => {
+            (r(!0), s(M, null, K(((E = j(O).getHeaderGroups()[0]) == null ? void 0 : E.headers) ?? [], (b) => {
               var S;
               return r(), s("div", {
-                key: h.id,
-                "data-col": h.column.id,
+                key: b.id,
+                "data-col": b.column.id,
                 role: "columnheader",
                 draggable: "true",
-                style: W({ textAlign: ((S = h.column.columnDef.meta) == null ? void 0 : S.align) === "right" ? "right" : "left" }),
-                onDragstart: (H) => C(H, h.column.id),
+                style: W({ textAlign: ((S = b.column.columnDef.meta) == null ? void 0 : S.align) === "right" ? "right" : "left" }),
+                onDragstart: (H) => C(H, b.column.id),
                 onDragover: $[0] || ($[0] = J(() => {
                 }, ["prevent"])),
-                onDrop: (H) => F(H, h.column.id)
+                onDrop: (H) => F(H, b.column.id)
               }, [
-                h.isPlaceholder ? T("", !0) : (r(), X(Ge, {
+                b.isPlaceholder ? T("", !0) : (r(), X(Ge, {
                   key: 0,
-                  header: h
+                  header: b
                 }, null, 8, ["header"]))
               ], 44, ht);
             }), 128))
@@ -885,31 +886,32 @@ const xe = /* @__PURE__ */ B({
           v("div", {
             style: W({ height: `${j(V).getTotalSize()}px`, width: "100%", position: "relative" })
           }, [
-            (r(!0), s(M, null, K(c.value, (h) => (r(), s("div", {
-              key: h.row.id,
-              "data-row": h.row.id,
+            (r(!0), s(M, null, K(c.value, (b) => (r(), s("div", {
+              key: b.row.id,
+              "data-row": b.row.id,
+              class: Y(n.rowClass ? n.rowClass(b.row.original) : void 0),
               role: "row",
-              style: W({ position: "absolute", top: 0, left: 0, width: "100%", transform: `translateY(${h.start}px)`, display: "grid", gridTemplateColumns: I.value })
+              style: W({ position: "absolute", top: 0, left: 0, width: "100%", transform: `translateY(${b.start}px)`, display: "grid", gridTemplateColumns: I.value })
             }, [
-              (r(!0), s(M, null, K(h.row.getVisibleCells(), (S) => {
+              (r(!0), s(M, null, K(b.row.getVisibleCells(), (S) => {
                 var H, q;
                 return r(), s("div", {
                   key: S.id,
                   "data-col": S.column.id,
                   role: "gridcell",
                   style: W({ textAlign: ((H = S.column.columnDef.meta) == null ? void 0 : H.align) === "right" ? "right" : "left" }),
-                  onClick: (G) => k(S, h.row.original)
+                  onClick: (G) => k(S, b.row.original)
                 }, [
                   p(S.column.id) ? me(t.$slots, "cell-" + S.column.id, {
                     key: 0,
-                    row: h.row.original,
+                    row: b.row.original,
                     value: S.getValue(),
                     column: S.column,
                     cell: S
                   }, void 0, !0) : (q = S.column.columnDef.meta) != null && q.editable ? (r(), X(xe, {
                     key: 1,
                     "model-value": S.getValue(),
-                    onCommit: (G) => i("cellEdit", h.row.id, S.column.id, G)
+                    onCommit: (G) => i("cellEdit", b.row.id, S.column.id, G)
                   }, null, 8, ["model-value", "onCommit"])) : S.column.columnDef.cell ? (r(), X(j(ae), {
                     key: 2,
                     render: S.column.columnDef.cell,
@@ -919,13 +921,13 @@ const xe = /* @__PURE__ */ B({
                   ], 64))
                 ], 12, _t);
               }), 128))
-            ], 12, wt))), 128))
+            ], 14, wt))), 128))
           ], 4)
         ], 4)
       ], 64);
     };
   }
-}), Vt = /* @__PURE__ */ U(kt, [["__scopeId", "data-v-cc0d0e3a"]]), Ft = {
+}), Vt = /* @__PURE__ */ U(kt, [["__scopeId", "data-v-3b3e195f"]]), Ft = {
   sorting: [],
   columnFilters: [],
   columnVisibility: {},

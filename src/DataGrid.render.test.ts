@@ -57,4 +57,10 @@ describe("DataGrid render", () => {
     expect(w.find('[data-col="name"]').exists()).toBe(false);
     expect(w.find('[data-col="qty"]').exists()).toBe(true);
   });
+
+  it("applies rowClass to each row based on data", () => {
+    const w = mount(DataGrid, { props: { data: rows, columns: colsForMount, rowKey: "id", height: 400, rowClass: (r: any) => (r.name === "이지수" ? "row-hi" : undefined) } });
+    expect(w.find("[data-row='1'].row-hi").exists()).toBe(true);
+    expect(w.find("[data-row='2'].row-hi").exists()).toBe(false);
+  });
 });

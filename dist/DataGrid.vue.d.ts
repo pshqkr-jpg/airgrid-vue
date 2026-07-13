@@ -12,6 +12,8 @@ declare const _default: <TRow extends Record<string, any>>(__VLS_props: NonNulla
         estimateRowHeight?: number;
         filterPersistKey?: string;
         viewState?: ViewState;
+        /** 행 데이터 기반 클래스. 반환 클래스가 각 행 요소에 적용됨(행 색상 등). */
+        rowClass?: (row: TRow) => string | undefined;
     } & Partial<{}>> & import("vue").PublicProps;
     expose(exposed: import("vue").ShallowUnwrapRef<{}>): void;
     attrs: any;

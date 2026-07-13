@@ -23,6 +23,8 @@ const props = defineProps<{
   data: TRow[]; columns: ColumnDef<TRow>[]; rowKey: keyof TRow & string;
   height?: number | string; estimateRowHeight?: number;
   filterPersistKey?: string; viewState?: ViewState;
+  /** 행 데이터 기반 클래스. 반환 클래스가 각 행 요소에 적용됨(행 색상 등). */
+  rowClass?: (row: TRow) => string | undefined;
 }>();
 const emit = defineEmits<{
   cellEdit: [rowId: string, columnId: string, value: unknown];
@@ -189,6 +191,7 @@ function onDropColumn(e: DragEvent, targetColumnId: string) {
         v-for="item in visibleRows"
         :key="item.row.id"
         :data-row="item.row.id"
+        :class="props.rowClass ? props.rowClass(item.row.original) : undefined"
         role="row"
         :style="{ position: 'absolute', top: 0, left: 0, width: '100%', transform: `translateY(${item.start}px)`, display: 'grid', gridTemplateColumns }"
       >

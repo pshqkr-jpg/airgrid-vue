@@ -27,3 +27,5 @@ Deferred minors (post-merge, do NOT block /members which uses filterPersistKey n
  - #8 filterPersistKey + viewState collide (both active) rather than one deferring
  - #9 popover autofocus attr doesn't fire on v-if mount (use ref+.focus())
  - cellEdit on number columns emits string (doc says number|string|null) — note in docs
+FINAL REVIEW fixes: complete (commit 5515894; viewState init all 5 slices + one-way doc + spanGroup removed + resize listener leak fixed + regression test; 28/28, vue-tsc 0, build OK).
+=== airgrid-vue DONE — READY. 15 commits, 28 tests, vue-tsc 0, builds. Deferred minors logged above. ===
