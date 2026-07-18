@@ -1,5 +1,5 @@
-import { defineComponent as B, ref as P, watch as le, withDirectives as oe, openBlock as r, createElementBlock as s, vModelText as re, computed as w, createElementVNode as v, Fragment as M, renderList as K, toDisplayString as R, createCommentVNode as T, onBeforeUnmount as Z, createBlock as X, unref as j, withModifiers as J, normalizeClass as Y, createTextVNode as ie, useSlots as ce, shallowRef as de, createVNode as ne, normalizeStyle as W, renderSlot as me } from "vue";
-import { FlexRender as ae, useVueTable as ve, getSortedRowModel as ge, getFilteredRowModel as fe, getCoreRowModel as pe } from "@tanstack/vue-table";
+import { defineComponent as B, ref as P, watch as le, withDirectives as oe, openBlock as i, createElementBlock as s, vModelText as re, computed as _, createElementVNode as g, Fragment as M, renderList as K, toDisplayString as R, createCommentVNode as T, onBeforeUnmount as Z, createBlock as X, unref as j, withModifiers as J, normalizeClass as Y, createTextVNode as ie, useSlots as ce, shallowRef as de, createVNode as ne, normalizeStyle as W, renderSlot as me } from "vue";
+import { FlexRender as ae, useVueTable as ve, getSortedRowModel as fe, getFilteredRowModel as ge, getCoreRowModel as pe } from "@tanstack/vue-table";
 import { useVirtualizer as ye } from "@tanstack/vue-virtual";
 function ue(l) {
   return l == null ? null : typeof l == "string" ? l.trim() === "" ? null : { op: "contains", value: l } : typeof l == "object" ? l : null;
@@ -17,61 +17,61 @@ function ee(l) {
   const e = se(l);
   return e ? e.op === "isEmpty" || e.op === "isNotEmpty" ? !0 : e.op === "between" ? typeof e.min == "number" && Number.isFinite(e.min) || typeof e.max == "number" && Number.isFinite(e.max) : typeof e.value == "number" && Number.isFinite(e.value) : !1;
 }
-const be = (l, e, n) => {
-  const i = ue(n);
-  if (!i || !Q(n)) return !0;
-  const g = l.getValue(e), p = g == null || String(g).trim() === "", k = i.op ?? "contains";
-  if (k === "isEmpty") return p;
-  if (k === "isNotEmpty") return !p;
-  if (p) return !1;
-  const u = String(g).toLowerCase(), m = (i.value ?? "").trim().toLowerCase();
-  switch (k) {
+const be = (l, e, t) => {
+  const o = ue(t);
+  if (!o || !Q(t)) return !0;
+  const v = l.getValue(e), c = v == null || String(v).trim() === "", h = o.op ?? "contains";
+  if (h === "isEmpty") return c;
+  if (h === "isNotEmpty") return !c;
+  if (c) return !1;
+  const a = String(v).toLowerCase(), d = (o.value ?? "").trim().toLowerCase();
+  switch (h) {
     case "is":
-      return u === m;
+      return a === d;
     case "isNot":
-      return u !== m;
+      return a !== d;
     case "notContains":
-      return !u.includes(m);
+      return !a.includes(d);
     case "startsWith":
-      return u.startsWith(m);
+      return a.startsWith(d);
     case "endsWith":
-      return u.endsWith(m);
+      return a.endsWith(d);
     case "contains":
     default:
-      return u.includes(m);
+      return a.includes(d);
   }
-}, he = (l, e, n) => {
-  const i = se(n);
-  if (!i || !ee(n)) return !0;
-  const g = l.getValue(e), p = g == null || g === "", k = i.op ?? "between";
-  if (k === "isEmpty") return p;
-  if (k === "isNotEmpty") return !p;
-  if (p) return !1;
-  const u = typeof g == "number" ? g : Number(g);
-  if (!Number.isFinite(u)) return !1;
-  if (k === "between")
-    return !(i.min != null && u < i.min || i.max != null && u > i.max);
-  if (i.value == null || !Number.isFinite(i.value)) return !0;
-  switch (k) {
+}, he = (l, e, t) => {
+  const o = se(t);
+  if (!o || !ee(t)) return !0;
+  const v = l.getValue(e), c = v == null || v === "", h = o.op ?? "between";
+  if (h === "isEmpty") return c;
+  if (h === "isNotEmpty") return !c;
+  if (c) return !1;
+  const a = typeof v == "number" ? v : Number(v);
+  if (!Number.isFinite(a)) return !1;
+  if (h === "between")
+    return !(o.min != null && a < o.min || o.max != null && a > o.max);
+  if (o.value == null || !Number.isFinite(o.value)) return !0;
+  switch (h) {
     case "eq":
-      return u === i.value;
+      return a === o.value;
     case "neq":
-      return u !== i.value;
+      return a !== o.value;
     case "lt":
-      return u < i.value;
+      return a < o.value;
     case "gt":
-      return u > i.value;
+      return a > o.value;
     case "lte":
-      return u <= i.value;
+      return a <= o.value;
     case "gte":
-      return u >= i.value;
+      return a >= o.value;
   }
   return !0;
-}, we = (l, e, n) => {
-  if (!Array.isArray(n) || n.length === 0) return !0;
-  const i = l.getValue(e);
-  return n.includes(String(i ?? ""));
-}, _e = (l, e, n) => n === "any" || n == null ? !0 : l.getValue(e) === n;
+}, we = (l, e, t) => {
+  if (!Array.isArray(t) || t.length === 0) return !0;
+  const o = l.getValue(e);
+  return t.includes(String(o ?? ""));
+}, _e = (l, e, t) => t === "any" || t == null ? !0 : l.getValue(e) === t;
 function ke(l) {
   switch (l) {
     case "text":
@@ -92,13 +92,13 @@ function Ce(l) {
   try {
     const e = window.localStorage.getItem(te + l);
     if (!e) return null;
-    const n = JSON.parse(e);
+    const t = JSON.parse(e);
     return {
-      sorting: n.sorting ?? [],
-      columnFilters: n.columnFilters ?? [],
-      columnVisibility: n.columnVisibility ?? {},
-      columnOrder: n.columnOrder ?? [],
-      columnSizing: n.columnSizing ?? {}
+      sorting: t.sorting ?? [],
+      columnFilters: t.columnFilters ?? [],
+      columnVisibility: t.columnVisibility ?? {},
+      columnOrder: t.columnOrder ?? [],
+      columnSizing: t.columnSizing ?? {}
     };
   } catch {
     return null;
@@ -111,76 +111,100 @@ function Se(l, e) {
     } catch {
     }
 }
-function Et(l) {
+function Ft(l) {
   if (!(typeof window > "u"))
     try {
       window.localStorage.removeItem(te + l);
     } catch {
     }
 }
-const xe = /* @__PURE__ */ B({
+function xe(l, e) {
+  if (!l || l.length === 0) return [];
+  const t = new Set(e), o = l.filter((c) => t.has(c)), v = new Set(o);
+  for (let c = 0; c < e.length; c++) {
+    const h = e[c];
+    if (v.has(h)) continue;
+    let a = 0;
+    for (let d = c - 1; d >= 0; d--) {
+      const x = o.indexOf(e[d]);
+      if (x >= 0) {
+        a = x + 1;
+        break;
+      }
+    }
+    o.splice(a, 0, h), v.add(h);
+  }
+  return o;
+}
+function Ee(l, e) {
+  const t = { ...l ?? {} };
+  for (const o of e)
+    !(o.id in t) && o.defaultVisible === !1 && (t[o.id] = !1);
+  return t;
+}
+const Ve = /* @__PURE__ */ B({
   __name: "EditableCell",
   props: {
     modelValue: {}
   },
   emits: ["commit"],
   setup(l, { emit: e }) {
-    const n = l, i = e, g = () => n.modelValue == null ? "" : String(n.modelValue), p = P(g());
-    le(() => n.modelValue, () => {
-      p.value = g();
+    const t = l, o = e, v = () => t.modelValue == null ? "" : String(t.modelValue), c = P(v());
+    le(() => t.modelValue, () => {
+      c.value = v();
     });
-    function k() {
-      p.value !== g() && i("commit", p.value);
+    function h() {
+      c.value !== v() && o("commit", c.value);
     }
-    function u(m) {
-      const D = m.currentTarget;
-      m.key === "Enter" ? D.blur() : m.key === "Escape" && (p.value = g(), D.blur());
+    function a(d) {
+      const x = d.currentTarget;
+      d.key === "Enter" ? x.blur() : d.key === "Escape" && (c.value = v(), x.blur());
     }
-    return (m, D) => oe((r(), s("input", {
-      "onUpdate:modelValue": D[0] || (D[0] = (y) => p.value = y),
-      onBlur: k,
-      onKeydown: u
+    return (d, x) => oe((i(), s("input", {
+      "onUpdate:modelValue": x[0] || (x[0] = (y) => c.value = y),
+      onBlur: h,
+      onKeydown: a
     }, null, 544)), [
-      [re, p.value]
+      [re, c.value]
     ]);
   }
-}), Ee = {
+}), Fe = {
   class: "airgrid-filter-popover",
   role: "menu"
-}, Ve = {
+}, $e = {
   key: 0,
   class: "airgrid-filter-input-group"
-}, Fe = ["value"], $e = ["value"], De = ["placeholder", "value", "disabled"], Ne = {
+}, De = ["value"], Ne = ["value"], Oe = ["placeholder", "value", "disabled"], Le = {
   key: 1,
   class: "airgrid-filter-input-group"
-}, Ie = ["value"], Oe = ["value"], Le = {
+}, Ie = ["value"], Re = ["value"], Te = {
   key: 0,
   class: "airgrid-filter-range"
-}, Re = ["value"], Te = ["value"], Pe = {
+}, Pe = ["value"], Me = ["value"], ze = {
   key: 1,
   type: "text",
   placeholder: "(값 입력 불필요)",
   disabled: ""
-}, Me = ["value"], ze = ["value"], Ae = ["value", "selected"], Ke = /* @__PURE__ */ B({
+}, Ae = ["value"], Ke = ["value"], He = ["value", "selected"], We = /* @__PURE__ */ B({
   __name: "HeaderFilterPopover",
   props: {
     column: {},
     table: {}
   },
   setup(l) {
-    const e = l, n = w(() => e.column.columnDef.meta), i = w(() => {
-      var o;
-      return (o = n.value) == null ? void 0 : o.filterType;
-    }), g = w(() => {
-      var a;
-      if ((a = n.value) != null && a.selectOptions) return n.value.selectOptions;
-      const o = /* @__PURE__ */ new Set();
-      for (const f of e.table.getPreFilteredRowModel().rows) {
-        const A = f.getValue(e.column.id);
-        A != null && A !== "" && o.add(String(A));
+    const e = l, t = _(() => e.column.columnDef.meta), o = _(() => {
+      var r;
+      return (r = t.value) == null ? void 0 : r.filterType;
+    }), v = _(() => {
+      var u;
+      if ((u = t.value) != null && u.selectOptions) return t.value.selectOptions;
+      const r = /* @__PURE__ */ new Set();
+      for (const p of e.table.getPreFilteredRowModel().rows) {
+        const A = p.getValue(e.column.id);
+        A != null && A !== "" && r.add(String(A));
       }
-      return Array.from(o);
-    }), p = [
+      return Array.from(r);
+    }), c = [
       { value: "contains", label: "포함" },
       { value: "notContains", label: "미포함" },
       { value: "is", label: "일치" },
@@ -189,7 +213,7 @@ const xe = /* @__PURE__ */ B({
       { value: "endsWith", label: "~로 끝남" },
       { value: "isEmpty", label: "비어있음" },
       { value: "isNotEmpty", label: "값 있음" }
-    ], k = [
+    ], h = [
       { value: "between", label: "범위" },
       { value: "eq", label: "=" },
       { value: "neq", label: "≠" },
@@ -199,527 +223,527 @@ const xe = /* @__PURE__ */ B({
       { value: "gte", label: "≥" },
       { value: "isEmpty", label: "비어있음" },
       { value: "isNotEmpty", label: "값 있음" }
-    ], u = w(() => {
-      const o = e.column.getFilterValue();
-      return typeof o == "string" ? { op: "contains", value: o } : o && typeof o == "object" ? o : {};
-    }), m = w(() => u.value.op ?? "contains"), D = w(() => m.value === "isEmpty" || m.value === "isNotEmpty");
-    function y(o) {
-      const a = o.target.value;
-      a === "isEmpty" || a === "isNotEmpty" ? e.column.setFilterValue({ op: a }) : e.column.setFilterValue({ op: a, value: u.value.value ?? "" });
+    ], a = _(() => {
+      const r = e.column.getFilterValue();
+      return typeof r == "string" ? { op: "contains", value: r } : r && typeof r == "object" ? r : {};
+    }), d = _(() => a.value.op ?? "contains"), x = _(() => d.value === "isEmpty" || d.value === "isNotEmpty");
+    function y(r) {
+      const u = r.target.value;
+      u === "isEmpty" || u === "isNotEmpty" ? e.column.setFilterValue({ op: u }) : e.column.setFilterValue({ op: u, value: a.value.value ?? "" });
     }
-    function L(o) {
-      const a = o.target.value;
-      e.column.setFilterValue({ op: m.value, value: a });
+    function I(r) {
+      const u = r.target.value;
+      e.column.setFilterValue({ op: d.value, value: u });
     }
-    const x = w(() => {
-      const o = e.column.getFilterValue();
-      if (o && typeof o == "object") {
-        const a = o;
-        return !a.op && (a.min != null || a.max != null) ? { op: "between", min: a.min, max: a.max } : a;
+    const E = _(() => {
+      const r = e.column.getFilterValue();
+      if (r && typeof r == "object") {
+        const u = r;
+        return !u.op && (u.min != null || u.max != null) ? { op: "between", min: u.min, max: u.max } : u;
       }
       return {};
-    }), N = w(() => x.value.op ?? "between");
-    function O(o) {
-      const a = o.target.value, f = x.value;
-      a === "isEmpty" || a === "isNotEmpty" ? e.column.setFilterValue({ op: a }) : a === "between" ? e.column.setFilterValue({ op: a, min: f.min, max: f.max }) : e.column.setFilterValue({ op: a, value: f.value });
+    }), N = _(() => E.value.op ?? "between");
+    function L(r) {
+      const u = r.target.value, p = E.value;
+      u === "isEmpty" || u === "isNotEmpty" ? e.column.setFilterValue({ op: u }) : u === "between" ? e.column.setFilterValue({ op: u, min: p.min, max: p.max }) : e.column.setFilterValue({ op: u, value: p.value });
     }
-    function h(o) {
-      const a = o.target.value, f = a === "" ? void 0 : Number(a);
-      e.column.setFilterValue({ op: "between", min: f, max: x.value.max });
+    function w(r) {
+      const u = r.target.value, p = u === "" ? void 0 : Number(u);
+      e.column.setFilterValue({ op: "between", min: p, max: E.value.max });
     }
-    function I(o) {
-      const a = o.target.value, f = a === "" ? void 0 : Number(a);
-      e.column.setFilterValue({ op: "between", min: x.value.min, max: f });
+    function O(r) {
+      const u = r.target.value, p = u === "" ? void 0 : Number(u);
+      e.column.setFilterValue({ op: "between", min: E.value.min, max: p });
     }
-    function _(o) {
-      const a = o.target.value, f = a === "" ? void 0 : Number(a);
-      e.column.setFilterValue({ op: N.value, value: f });
+    function k(r) {
+      const u = r.target.value, p = u === "" ? void 0 : Number(u);
+      e.column.setFilterValue({ op: N.value, value: p });
     }
-    const V = w(() => {
-      const o = e.column.getFilterValue();
-      return o === !0 ? "true" : o === !1 ? "false" : "any";
+    const F = _(() => {
+      const r = e.column.getFilterValue();
+      return r === !0 ? "true" : r === !1 ? "false" : "any";
     });
-    function c(o) {
-      const a = o.target.value;
-      e.column.setFilterValue(a === "any" ? void 0 : a === "true");
+    function m(r) {
+      const u = r.target.value;
+      e.column.setFilterValue(u === "any" ? void 0 : u === "true");
     }
-    const d = w(() => {
-      const o = e.column.getFilterValue();
-      return Array.isArray(o) ? o : [];
+    const f = _(() => {
+      const r = e.column.getFilterValue();
+      return Array.isArray(r) ? r : [];
     });
-    function C(o) {
-      const a = Array.from(o.target.selectedOptions, (f) => f.value);
-      e.column.setFilterValue(a.length === 0 ? void 0 : a);
+    function C(r) {
+      const u = Array.from(r.target.selectedOptions, (p) => p.value);
+      e.column.setFilterValue(u.length === 0 ? void 0 : u);
     }
-    function F() {
+    function $() {
       e.column.setFilterValue(void 0);
     }
-    const z = w(() => {
-      const o = e.column.getFilterValue();
-      if (o == null) return !1;
-      switch (i.value) {
+    const z = _(() => {
+      const r = e.column.getFilterValue();
+      if (r == null) return !1;
+      switch (o.value) {
         case "text":
-          return Q(o);
+          return Q(r);
         case "numberRange":
-          return ee(o);
+          return ee(r);
         case "select":
-          return Array.isArray(o) && o.length > 0;
+          return Array.isArray(r) && r.length > 0;
         case "boolean":
-          return o !== "any";
+          return r !== "any";
         default:
           return !1;
       }
     });
-    return (o, a) => (r(), s("div", Ee, [
-      i.value === "text" ? (r(), s("div", Ve, [
-        v("select", {
-          value: m.value,
+    return (r, u) => (i(), s("div", Fe, [
+      o.value === "text" ? (i(), s("div", $e, [
+        g("select", {
+          value: d.value,
           class: "airgrid-filter-select",
           onChange: y
         }, [
-          (r(), s(M, null, K(p, (f) => v("option", {
-            key: f.value,
-            value: f.value
-          }, R(f.label), 9, $e)), 64))
-        ], 40, Fe),
-        v("input", {
+          (i(), s(M, null, K(c, (p) => g("option", {
+            key: p.value,
+            value: p.value
+          }, R(p.label), 9, Ne)), 64))
+        ], 40, De),
+        g("input", {
           type: "text",
           autofocus: "",
           class: "airgrid-filter-text-input",
-          placeholder: D.value ? "(값 입력 불필요)" : "검색…",
-          value: u.value.value ?? "",
-          disabled: D.value,
-          onInput: L
-        }, null, 40, De)
-      ])) : i.value === "numberRange" ? (r(), s("div", Ne, [
-        v("select", {
+          placeholder: x.value ? "(값 입력 불필요)" : "검색…",
+          value: a.value.value ?? "",
+          disabled: x.value,
+          onInput: I
+        }, null, 40, Oe)
+      ])) : o.value === "numberRange" ? (i(), s("div", Le, [
+        g("select", {
           value: N.value,
           class: "airgrid-filter-select",
-          onChange: O
+          onChange: L
         }, [
-          (r(), s(M, null, K(k, (f) => v("option", {
-            key: f.value,
-            value: f.value
-          }, R(f.label), 9, Oe)), 64))
+          (i(), s(M, null, K(h, (p) => g("option", {
+            key: p.value,
+            value: p.value
+          }, R(p.label), 9, Re)), 64))
         ], 40, Ie),
-        N.value === "between" ? (r(), s("div", Le, [
-          v("input", {
+        N.value === "between" ? (i(), s("div", Te, [
+          g("input", {
             type: "number",
             autofocus: "",
             placeholder: "min",
-            value: x.value.min ?? "",
-            onInput: h
-          }, null, 40, Re),
-          v("input", {
+            value: E.value.min ?? "",
+            onInput: w
+          }, null, 40, Pe),
+          g("input", {
             type: "number",
             placeholder: "max",
-            value: x.value.max ?? "",
-            onInput: I
-          }, null, 40, Te)
-        ])) : N.value === "isEmpty" || N.value === "isNotEmpty" ? (r(), s("input", Pe)) : (r(), s("input", {
+            value: E.value.max ?? "",
+            onInput: O
+          }, null, 40, Me)
+        ])) : N.value === "isEmpty" || N.value === "isNotEmpty" ? (i(), s("input", ze)) : (i(), s("input", {
           key: 2,
           type: "number",
           autofocus: "",
           placeholder: "값",
-          value: x.value.value ?? "",
-          onInput: _
-        }, null, 40, Me))
-      ])) : i.value === "boolean" ? (r(), s("select", {
+          value: E.value.value ?? "",
+          onInput: k
+        }, null, 40, Ae))
+      ])) : o.value === "boolean" ? (i(), s("select", {
         key: 2,
-        value: V.value,
+        value: F.value,
         class: "airgrid-filter-select",
-        onChange: c
-      }, [...a[0] || (a[0] = [
-        v("option", { value: "any" }, "전체", -1),
-        v("option", { value: "true" }, "예", -1),
-        v("option", { value: "false" }, "아니오", -1)
-      ])], 40, ze)) : i.value === "select" ? (r(), s("select", {
+        onChange: m
+      }, [...u[0] || (u[0] = [
+        g("option", { value: "any" }, "전체", -1),
+        g("option", { value: "true" }, "예", -1),
+        g("option", { value: "false" }, "아니오", -1)
+      ])], 40, Ke)) : o.value === "select" ? (i(), s("select", {
         key: 3,
         multiple: "",
         class: "airgrid-filter-select airgrid-filter-multiselect",
         onChange: C
       }, [
-        (r(!0), s(M, null, K(g.value, (f) => (r(), s("option", {
-          key: f,
-          value: f,
-          selected: d.value.includes(f)
-        }, R(f), 9, Ae))), 128))
+        (i(!0), s(M, null, K(v.value, (p) => (i(), s("option", {
+          key: p,
+          value: p,
+          selected: f.value.includes(p)
+        }, R(p), 9, He))), 128))
       ], 32)) : T("", !0),
-      z.value ? (r(), s("button", {
+      z.value ? (i(), s("button", {
         key: 4,
         type: "button",
         class: "airgrid-filter-reset",
-        onClick: F
+        onClick: $
       }, "필터 초기화")) : T("", !0)
     ]));
   }
 }), U = (l, e) => {
-  const n = l.__vccOpts || l;
-  for (const [i, g] of e)
-    n[i] = g;
-  return n;
-}, He = /* @__PURE__ */ U(Ke, [["__scopeId", "data-v-ff3ffe60"]]), We = ["aria-disabled"], je = {
+  const t = l.__vccOpts || l;
+  for (const [o, v] of e)
+    t[o] = v;
+  return t;
+}, je = /* @__PURE__ */ U(We, [["__scopeId", "data-v-ff3ffe60"]]), Be = ["aria-disabled"], qe = {
   key: 1,
   class: "airgrid-sort-indicator",
   "aria-hidden": "true"
-}, Be = {
+}, Xe = {
   key: 2,
   class: "airgrid-sort-indicator",
   "aria-hidden": "true"
-}, qe = {
+}, Ue = {
   key: 0,
   class: "airgrid-filter-dot",
   "aria-hidden": "true"
-}, Xe = 48, Ue = /* @__PURE__ */ B({
+}, Ge = 48, Je = /* @__PURE__ */ B({
   __name: "HeaderCell",
   props: {
     header: {}
   },
   setup(l) {
-    const e = l, n = w(() => e.header.column.columnDef.meta), i = w(() => {
-      var h;
-      return (h = n.value) == null ? void 0 : h.filterType;
-    }), g = P(!1), p = P(null), k = w(() => {
-      const h = e.header.column.getFilterValue();
-      if (h == null) return !1;
-      switch (i.value) {
+    const e = l, t = _(() => e.header.column.columnDef.meta), o = _(() => {
+      var w;
+      return (w = t.value) == null ? void 0 : w.filterType;
+    }), v = P(!1), c = P(null), h = _(() => {
+      const w = e.header.column.getFilterValue();
+      if (w == null) return !1;
+      switch (o.value) {
         case "text":
-          return Q(h);
+          return Q(w);
         case "numberRange":
-          return ee(h);
+          return ee(w);
         case "select":
-          return Array.isArray(h) && h.length > 0;
+          return Array.isArray(w) && w.length > 0;
         case "boolean":
-          return h !== "any";
+          return w !== "any";
         default:
           return !1;
       }
     });
-    function u(h) {
-      p.value && !p.value.contains(h.target) && y();
+    function a(w) {
+      c.value && !c.value.contains(w.target) && y();
     }
-    function m(h) {
-      h.key === "Escape" && y();
+    function d(w) {
+      w.key === "Escape" && y();
     }
-    function D() {
-      g.value = !0, document.addEventListener("mousedown", u), document.addEventListener("keydown", m);
+    function x() {
+      v.value = !0, document.addEventListener("mousedown", a), document.addEventListener("keydown", d);
     }
     function y() {
-      g.value = !1, document.removeEventListener("mousedown", u), document.removeEventListener("keydown", m);
+      v.value = !1, document.removeEventListener("mousedown", a), document.removeEventListener("keydown", d);
     }
-    function L() {
-      g.value ? y() : D();
+    function I() {
+      v.value ? y() : x();
     }
     Z(() => {
-      document.removeEventListener("mousedown", u), document.removeEventListener("keydown", m), N == null || N();
+      document.removeEventListener("mousedown", a), document.removeEventListener("keydown", d), N == null || N();
     });
-    function x() {
+    function E() {
       e.header.column.getCanSort() && e.header.column.toggleSorting();
     }
     let N = null;
-    function O(h) {
-      var f;
-      h.stopPropagation(), h.preventDefault();
-      const I = e.header, _ = I.getContext().table, V = I.column.columnDef.meta, c = (V == null ? void 0 : V.minWidth) ?? Xe, d = h.clientX, C = I.getSize(), F = h.currentTarget;
-      (f = F.setPointerCapture) == null || f.call(F, h.pointerId);
+    function L(w) {
+      var p;
+      w.stopPropagation(), w.preventDefault();
+      const O = e.header, k = O.getContext().table, F = O.column.columnDef.meta, m = (F == null ? void 0 : F.minWidth) ?? Ge, f = w.clientX, C = O.getSize(), $ = w.currentTarget;
+      (p = $.setPointerCapture) == null || p.call($, w.pointerId);
       function z(A) {
-        const t = Math.max(c, C + (A.clientX - d));
-        _.setColumnSizing(($) => ({ ...$, [I.column.id]: t }));
+        const n = Math.max(m, C + (A.clientX - f));
+        k.setColumnSizing((D) => ({ ...D, [O.column.id]: n }));
       }
-      function o() {
-        N = null, window.removeEventListener("pointermove", z), window.removeEventListener("pointerup", a);
+      function r() {
+        N = null, window.removeEventListener("pointermove", z), window.removeEventListener("pointerup", u);
       }
-      function a(A) {
-        var t;
-        (t = F.releasePointerCapture) == null || t.call(F, A.pointerId), o();
+      function u(A) {
+        var n;
+        (n = $.releasePointerCapture) == null || n.call($, A.pointerId), r();
       }
-      N = o, window.addEventListener("pointermove", z), window.addEventListener("pointerup", a);
+      N = r, window.addEventListener("pointermove", z), window.addEventListener("pointerup", u);
     }
-    return (h, I) => (r(), s("div", {
+    return (w, O) => (i(), s("div", {
       ref_key: "cellRoot",
-      ref: p,
+      ref: c,
       class: "airgrid-header-cell-inner"
     }, [
-      v("span", {
+      g("span", {
         class: "airgrid-header-label",
         role: "button",
         "aria-disabled": !l.header.column.getCanSort(),
-        onClick: x
+        onClick: E
       }, [
-        l.header.isPlaceholder ? T("", !0) : (r(), X(j(ae), {
+        l.header.isPlaceholder ? T("", !0) : (i(), X(j(ae), {
           key: 0,
           render: l.header.column.columnDef.header,
           props: l.header.getContext()
         }, null, 8, ["render", "props"])),
-        l.header.column.getIsSorted() === "asc" ? (r(), s("span", je, "↑")) : l.header.column.getIsSorted() === "desc" ? (r(), s("span", Be, "↓")) : T("", !0)
-      ], 8, We),
-      i.value ? (r(), s("button", {
+        l.header.column.getIsSorted() === "asc" ? (i(), s("span", qe, "↑")) : l.header.column.getIsSorted() === "desc" ? (i(), s("span", Xe, "↓")) : T("", !0)
+      ], 8, Be),
+      o.value ? (i(), s("button", {
         key: 0,
         type: "button",
-        class: Y(["airgrid-filter-btn", { "airgrid-filter-btn-active": k.value }]),
+        class: Y(["airgrid-filter-btn", { "airgrid-filter-btn-active": h.value }]),
         "aria-label": "필터",
-        onClick: J(L, ["stop"])
+        onClick: J(I, ["stop"])
       }, [
-        I[2] || (I[2] = ie(" ▾ ", -1)),
-        k.value ? (r(), s("span", qe)) : T("", !0)
+        O[2] || (O[2] = ie(" ▾ ", -1)),
+        h.value ? (i(), s("span", Ue)) : T("", !0)
       ], 2)) : T("", !0),
-      v("span", {
+      g("span", {
         class: "airgrid-resize-handle",
         role: "separator",
         "aria-orientation": "vertical",
         "aria-label": "컬럼 폭 조절",
         title: "드래그하여 컬럼 폭 조절",
-        onPointerdown: O,
-        onClick: I[0] || (I[0] = (_) => _.stopPropagation())
+        onPointerdown: L,
+        onClick: O[0] || (O[0] = (k) => k.stopPropagation())
       }, null, 32),
-      g.value ? (r(), X(He, {
+      v.value ? (i(), X(je, {
         key: 1,
         column: l.header.column,
         table: l.header.getContext().table,
-        onClick: I[1] || (I[1] = J(() => {
+        onClick: O[1] || (O[1] = J(() => {
         }, ["stop"]))
       }, null, 8, ["column", "table"])) : T("", !0)
     ], 512));
   }
-}), Ge = /* @__PURE__ */ U(Ue, [["__scopeId", "data-v-779345fb"]]), Je = {
+}), Ye = /* @__PURE__ */ U(Je, [["__scopeId", "data-v-779345fb"]]), Ze = {
   key: 0,
   class: "airgrid-hide-popover"
-}, Ye = { class: "airgrid-hide-section-label" }, Ze = ["data-hide-toggle", "onClick"], Qe = { class: "airgrid-hide-item-label" }, et = { class: "airgrid-hide-section-label" }, tt = ["data-hide-toggle", "onClick"], nt = { class: "airgrid-hide-item-label" }, lt = {
+}, Qe = { class: "airgrid-hide-section-label" }, et = ["data-hide-toggle", "onClick"], tt = { class: "airgrid-hide-item-label" }, nt = { class: "airgrid-hide-section-label" }, lt = ["data-hide-toggle", "onClick"], ot = { class: "airgrid-hide-item-label" }, rt = {
   key: 2,
   class: "airgrid-hide-empty"
-}, ot = /* @__PURE__ */ B({
+}, it = /* @__PURE__ */ B({
   __name: "HideColumnsMenu",
   props: {
     table: {}
   },
   setup(l) {
-    const e = l, n = P(!1), i = P(""), g = P(null);
-    function p(_) {
-      g.value && !g.value.contains(_.target) && m();
+    const e = l, t = P(!1), o = P(""), v = P(null);
+    function c(k) {
+      v.value && !v.value.contains(k.target) && d();
     }
-    function k(_) {
-      _.key === "Escape" && m();
+    function h(k) {
+      k.key === "Escape" && d();
     }
-    function u() {
-      n.value = !0, document.addEventListener("mousedown", p), document.addEventListener("keydown", k);
+    function a() {
+      t.value = !0, document.addEventListener("mousedown", c), document.addEventListener("keydown", h);
     }
-    function m() {
-      n.value = !1, i.value = "", document.removeEventListener("mousedown", p), document.removeEventListener("keydown", k);
+    function d() {
+      t.value = !1, o.value = "", document.removeEventListener("mousedown", c), document.removeEventListener("keydown", h);
     }
-    function D() {
-      n.value ? m() : u();
+    function x() {
+      t.value ? d() : a();
     }
     Z(() => {
-      document.removeEventListener("mousedown", p), document.removeEventListener("keydown", k);
+      document.removeEventListener("mousedown", c), document.removeEventListener("keydown", h);
     });
-    const y = w(() => e.table.getAllLeafColumns()), L = w(() => y.value.filter((_) => _.getIsVisible()).length), x = w(() => {
-      const _ = i.value.trim().toLowerCase();
-      return _ ? y.value.filter((V) => String(V.columnDef.header).toLowerCase().includes(_)) : y.value;
-    }), N = w(() => x.value.filter((_) => _.getIsVisible())), O = w(() => x.value.filter((_) => !_.getIsVisible()));
-    function h(_) {
-      var V;
-      (V = e.table.getColumn(_)) == null || V.toggleVisibility();
+    const y = _(() => e.table.getAllLeafColumns()), I = _(() => y.value.filter((k) => k.getIsVisible()).length), E = _(() => {
+      const k = o.value.trim().toLowerCase();
+      return k ? y.value.filter((F) => String(F.columnDef.header).toLowerCase().includes(k)) : y.value;
+    }), N = _(() => E.value.filter((k) => k.getIsVisible())), L = _(() => E.value.filter((k) => !k.getIsVisible()));
+    function w(k) {
+      var F;
+      (F = e.table.getColumn(k)) == null || F.toggleVisibility();
     }
-    function I() {
+    function O() {
       e.table.resetColumnVisibility();
     }
-    return (_, V) => (r(), s("div", {
+    return (k, F) => (i(), s("div", {
       ref_key: "root",
-      ref: g,
+      ref: v,
       class: "airgrid-hide-menu"
     }, [
-      v("button", {
+      g("button", {
         type: "button",
         class: "airgrid-hide-btn",
         title: "컬럼 표시 / 숨김",
-        onClick: D
-      }, " ⚙ 컬럼 (" + R(L.value) + "/" + R(y.value.length) + ") ", 1),
-      n.value ? (r(), s("div", Je, [
-        oe(v("input", {
-          "onUpdate:modelValue": V[0] || (V[0] = (c) => i.value = c),
+        onClick: x
+      }, " ⚙ 컬럼 (" + R(I.value) + "/" + R(y.value.length) + ") ", 1),
+      t.value ? (i(), s("div", Ze, [
+        oe(g("input", {
+          "onUpdate:modelValue": F[0] || (F[0] = (m) => o.value = m),
           type: "text",
           autofocus: "",
           placeholder: "컬럼명 검색…",
           class: "airgrid-hide-search"
         }, null, 512), [
-          [re, i.value]
+          [re, o.value]
         ]),
-        N.value.length > 0 ? (r(), s(M, { key: 0 }, [
-          v("div", Ye, "표시 중 (" + R(N.value.length) + ")", 1),
-          (r(!0), s(M, null, K(N.value, (c) => (r(), s("button", {
-            key: c.id,
+        N.value.length > 0 ? (i(), s(M, { key: 0 }, [
+          g("div", Qe, "표시 중 (" + R(N.value.length) + ")", 1),
+          (i(!0), s(M, null, K(N.value, (m) => (i(), s("button", {
+            key: m.id,
             type: "button",
             class: "airgrid-hide-item",
-            "data-hide-toggle": c.id,
-            onClick: (d) => h(c.id)
+            "data-hide-toggle": m.id,
+            onClick: (f) => w(m.id)
           }, [
-            V[1] || (V[1] = v("span", {
+            F[1] || (F[1] = g("span", {
               class: "airgrid-hide-marker airgrid-hide-marker-on",
               "aria-hidden": "true"
             }, "✓", -1)),
-            v("span", Qe, R(c.columnDef.header), 1)
-          ], 8, Ze))), 128))
+            g("span", tt, R(m.columnDef.header), 1)
+          ], 8, et))), 128))
         ], 64)) : T("", !0),
-        O.value.length > 0 ? (r(), s(M, { key: 1 }, [
-          v("div", et, "숨김 (" + R(O.value.length) + ")", 1),
-          (r(!0), s(M, null, K(O.value, (c) => (r(), s("button", {
-            key: c.id,
+        L.value.length > 0 ? (i(), s(M, { key: 1 }, [
+          g("div", nt, "숨김 (" + R(L.value.length) + ")", 1),
+          (i(!0), s(M, null, K(L.value, (m) => (i(), s("button", {
+            key: m.id,
             type: "button",
             class: "airgrid-hide-item",
-            "data-hide-toggle": c.id,
-            onClick: (d) => h(c.id)
+            "data-hide-toggle": m.id,
+            onClick: (f) => w(m.id)
           }, [
-            V[2] || (V[2] = v("span", {
+            F[2] || (F[2] = g("span", {
               class: "airgrid-hide-marker",
               "aria-hidden": "true"
             }, null, -1)),
-            v("span", nt, R(c.columnDef.header), 1)
-          ], 8, tt))), 128))
+            g("span", ot, R(m.columnDef.header), 1)
+          ], 8, lt))), 128))
         ], 64)) : T("", !0),
-        x.value.length === 0 ? (r(), s("div", lt, "일치하는 컬럼 없음")) : T("", !0),
-        v("button", {
+        E.value.length === 0 ? (i(), s("div", rt, "일치하는 컬럼 없음")) : T("", !0),
+        g("button", {
           type: "button",
           class: "airgrid-hide-reset",
-          onClick: I
+          onClick: O
         }, "모두 표시로 초기화")
       ])) : T("", !0)
     ], 512));
   }
-}), rt = /* @__PURE__ */ U(ot, [["__scopeId", "data-v-0276a726"]]), it = {
+}), at = /* @__PURE__ */ U(it, [["__scopeId", "data-v-0276a726"]]), ut = {
   key: 0,
   class: "airgrid-sort-popover",
   role: "dialog",
   "aria-label": "정렬 우선순위"
-}, at = {
+}, st = {
   key: 0,
   class: "airgrid-sort-empty"
-}, ut = {
+}, ct = {
   key: 1,
   class: "airgrid-sort-list"
-}, st = ["aria-label", "onDragstart", "onDrop"], ct = { class: "airgrid-sort-badge" }, dt = { class: "airgrid-sort-label" }, mt = ["onClick"], vt = ["onClick"], gt = {
+}, dt = ["aria-label", "onDragstart", "onDrop"], mt = { class: "airgrid-sort-badge" }, vt = { class: "airgrid-sort-label" }, ft = ["onClick"], gt = ["onClick"], pt = {
   key: 2,
   class: "airgrid-sort-add-row"
-}, ft = ["value"], pt = /* @__PURE__ */ B({
+}, yt = ["value"], bt = /* @__PURE__ */ B({
   __name: "SortPriorityPanel",
   props: {
     table: {}
   },
   setup(l) {
-    const e = l, n = P(!1), i = P(null), g = P(null);
-    function p(c) {
-      g.value && !g.value.contains(c.target) && m();
+    const e = l, t = P(!1), o = P(null), v = P(null);
+    function c(m) {
+      v.value && !v.value.contains(m.target) && d();
     }
-    function k(c) {
-      c.key === "Escape" && m();
+    function h(m) {
+      m.key === "Escape" && d();
     }
-    function u() {
-      n.value = !0, document.addEventListener("mousedown", p), document.addEventListener("keydown", k);
+    function a() {
+      t.value = !0, document.addEventListener("mousedown", c), document.addEventListener("keydown", h);
     }
-    function m() {
-      n.value = !1, i.value = null, document.removeEventListener("mousedown", p), document.removeEventListener("keydown", k);
+    function d() {
+      t.value = !1, o.value = null, document.removeEventListener("mousedown", c), document.removeEventListener("keydown", h);
     }
-    function D() {
-      n.value ? m() : u();
+    function x() {
+      t.value ? d() : a();
     }
     Z(() => {
-      document.removeEventListener("mousedown", p), document.removeEventListener("keydown", k);
+      document.removeEventListener("mousedown", c), document.removeEventListener("keydown", h);
     });
-    const y = w(() => e.table.getState().sorting), L = w(() => e.table.getAllLeafColumns().filter((c) => c.getCanSort())), x = w(() => {
-      const c = new Set(y.value.map((d) => d.id));
-      return L.value.filter((d) => !c.has(d.id));
+    const y = _(() => e.table.getState().sorting), I = _(() => e.table.getAllLeafColumns().filter((m) => m.getCanSort())), E = _(() => {
+      const m = new Set(y.value.map((f) => f.id));
+      return I.value.filter((f) => !m.has(f.id));
     });
-    function N(c) {
-      const d = e.table.getColumn(c);
-      return d ? String(d.columnDef.header) : c;
+    function N(m) {
+      const f = e.table.getColumn(m);
+      return f ? String(f.columnDef.header) : m;
     }
-    function O(c, d) {
-      if (c === d) return;
-      const C = [...y.value], [F] = C.splice(c, 1);
-      C.splice(d, 0, F), e.table.setSorting(C);
+    function L(m, f) {
+      if (m === f) return;
+      const C = [...y.value], [$] = C.splice(m, 1);
+      C.splice(f, 0, $), e.table.setSorting(C);
     }
-    function h(c) {
-      e.table.setSorting(y.value.map((d, C) => C === c ? { ...d, desc: !d.desc } : d));
+    function w(m) {
+      e.table.setSorting(y.value.map((f, C) => C === m ? { ...f, desc: !f.desc } : f));
     }
-    function I(c) {
-      e.table.setSorting(y.value.filter((d, C) => C !== c));
+    function O(m) {
+      e.table.setSorting(y.value.filter((f, C) => C !== m));
     }
-    function _(c) {
-      const d = c.target, C = d.value;
+    function k(m) {
+      const f = m.target, C = f.value;
       if (!C) return;
-      const F = [...y.value, { id: C, desc: !1 }];
-      e.table.setSorting(F), d.value = "";
+      const $ = [...y.value, { id: C, desc: !1 }];
+      e.table.setSorting($), f.value = "";
     }
-    function V() {
+    function F() {
       e.table.setSorting([]);
     }
-    return (c, d) => (r(), s("div", {
+    return (m, f) => (i(), s("div", {
       ref_key: "root",
-      ref: g,
+      ref: v,
       class: "airgrid-sort-menu"
     }, [
-      v("button", {
+      g("button", {
         type: "button",
         class: Y(["airgrid-sort-btn", { "airgrid-sort-btn-active": y.value.length > 0 }]),
         title: "정렬 우선순위 (다중 정렬)",
-        onClick: D
+        onClick: x
       }, " ⇅ 정렬" + R(y.value.length > 0 ? ` (${y.value.length})` : ""), 3),
-      n.value ? (r(), s("div", it, [
-        d[4] || (d[4] = v("div", { class: "airgrid-sort-title" }, "정렬 우선순위", -1)),
-        y.value.length === 0 ? (r(), s("div", at, "정렬이 없습니다. 아래에서 추가하세요.")) : (r(), s("div", ut, [
-          (r(!0), s(M, null, K(y.value, (C, F) => (r(), s("div", {
+      t.value ? (i(), s("div", ut, [
+        f[4] || (f[4] = g("div", { class: "airgrid-sort-title" }, "정렬 우선순위", -1)),
+        y.value.length === 0 ? (i(), s("div", st, "정렬이 없습니다. 아래에서 추가하세요.")) : (i(), s("div", ct, [
+          (i(!0), s(M, null, K(y.value, (C, $) => (i(), s("div", {
             key: C.id,
             draggable: "true",
-            class: Y(["airgrid-sort-row", { "airgrid-sort-row-dragging": i.value === F }]),
-            "aria-label": `${F + 1}순위 정렬 ${N(C.id)}`,
-            onDragstart: (z) => i.value = F,
-            onDragover: d[0] || (d[0] = J(() => {
+            class: Y(["airgrid-sort-row", { "airgrid-sort-row-dragging": o.value === $ }]),
+            "aria-label": `${$ + 1}순위 정렬 ${N(C.id)}`,
+            onDragstart: (z) => o.value = $,
+            onDragover: f[0] || (f[0] = J(() => {
             }, ["prevent"])),
             onDrop: () => {
-              i.value != null && O(i.value, F), i.value = null;
+              o.value != null && L(o.value, $), o.value = null;
             },
-            onDragend: d[1] || (d[1] = (z) => i.value = null)
+            onDragend: f[1] || (f[1] = (z) => o.value = null)
           }, [
-            d[2] || (d[2] = v("span", {
+            f[2] || (f[2] = g("span", {
               class: "airgrid-sort-drag-handle",
               "aria-hidden": "true"
             }, "⋮⋮", -1)),
-            v("span", ct, R(F + 1), 1),
-            v("span", dt, R(N(C.id)), 1),
-            v("button", {
+            g("span", mt, R($ + 1), 1),
+            g("span", vt, R(N(C.id)), 1),
+            g("button", {
               type: "button",
               class: "airgrid-sort-dir-btn",
-              onClick: (z) => h(F)
-            }, R(C.desc ? "↓ 내림차순" : "↑ 오름차순"), 9, mt),
-            v("button", {
+              onClick: (z) => w($)
+            }, R(C.desc ? "↓ 내림차순" : "↑ 오름차순"), 9, ft),
+            g("button", {
               type: "button",
               class: "airgrid-sort-remove-btn",
               "aria-label": "정렬 제거",
-              onClick: (z) => I(F)
-            }, "×", 8, vt)
-          ], 42, st))), 128))
+              onClick: (z) => O($)
+            }, "×", 8, gt)
+          ], 42, dt))), 128))
         ])),
-        x.value.length > 0 ? (r(), s("div", gt, [
-          v("select", {
+        E.value.length > 0 ? (i(), s("div", pt, [
+          g("select", {
             class: "airgrid-sort-add-select",
-            onChange: _
+            onChange: k
           }, [
-            d[3] || (d[3] = v("option", { value: "" }, "+ 정렬 컬럼 추가…", -1)),
-            (r(!0), s(M, null, K(x.value, (C) => (r(), s("option", {
+            f[3] || (f[3] = g("option", { value: "" }, "+ 정렬 컬럼 추가…", -1)),
+            (i(!0), s(M, null, K(E.value, (C) => (i(), s("option", {
               key: C.id,
               value: C.id
-            }, R(String(C.columnDef.header)), 9, ft))), 128))
+            }, R(String(C.columnDef.header)), 9, yt))), 128))
           ], 32)
         ])) : T("", !0),
-        y.value.length > 0 ? (r(), s("button", {
+        y.value.length > 0 ? (i(), s("button", {
           key: 3,
           type: "button",
           class: "airgrid-sort-reset",
-          onClick: V
+          onClick: F
         }, " 전체 정렬 해제 ")) : T("", !0)
       ])) : T("", !0)
     ], 512));
   }
-}), yt = /* @__PURE__ */ U(pt, [["__scopeId", "data-v-2b7dcd97"]]), bt = { class: "airgrid-toolbar" }, ht = ["data-col", "onDragstart", "onDrop"], wt = ["data-row"], _t = ["data-col", "onClick"], kt = /* @__PURE__ */ B({
+}), ht = /* @__PURE__ */ U(bt, [["__scopeId", "data-v-2b7dcd97"]]), wt = { class: "airgrid-toolbar" }, _t = ["data-col", "onDragstart", "onDrop"], kt = ["data-row"], Ct = ["data-col", "onClick"], St = /* @__PURE__ */ B({
   __name: "DataGrid",
   props: {
     data: {},
@@ -733,210 +757,214 @@ const xe = /* @__PURE__ */ B({
   },
   emits: ["cellEdit", "rowClick", "update:viewState"],
   setup(l, { emit: e }) {
-    var z, o, a, f, A;
-    const n = l, i = e, g = ce();
-    function p(t) {
-      return !!g[`cell-${t}`];
+    var z, r, u, p, A;
+    const t = l, o = e, v = ce();
+    function c(n) {
+      return !!v[`cell-${n}`];
     }
-    function k(t, $) {
+    function h(n, D) {
       var b;
-      (b = t.column.columnDef.meta) != null && b.editable && !p(t.column.id) || i("rowClick", $);
+      (b = n.column.columnDef.meta) != null && b.editable && !c(n.column.id) || o("rowClick", D);
     }
-    const u = n.filterPersistKey ? Ce(n.filterPersistKey) : null, m = P((u == null ? void 0 : u.sorting) ?? ((z = n.viewState) == null ? void 0 : z.sorting) ?? []), D = P((u == null ? void 0 : u.columnFilters) ?? ((o = n.viewState) == null ? void 0 : o.columnFilters) ?? []), y = P((u == null ? void 0 : u.columnVisibility) ?? ((a = n.viewState) == null ? void 0 : a.columnVisibility) ?? Object.fromEntries(n.columns.filter((t) => t.defaultVisible === !1).map((t) => [t.id, !1]))), L = P((u == null ? void 0 : u.columnOrder) ?? ((f = n.viewState) == null ? void 0 : f.columnOrder) ?? []), x = P((u == null ? void 0 : u.columnSizing) ?? ((A = n.viewState) == null ? void 0 : A.columnSizing) ?? {}), N = w(() => n.columns.map((t) => ({
-      id: t.id,
-      accessorKey: t.accessorKey,
-      header: t.header,
+    const a = t.filterPersistKey ? Ce(t.filterPersistKey) : null, d = P((a == null ? void 0 : a.sorting) ?? ((z = t.viewState) == null ? void 0 : z.sorting) ?? []), x = P((a == null ? void 0 : a.columnFilters) ?? ((r = t.viewState) == null ? void 0 : r.columnFilters) ?? []), y = P(
+      Ee((a == null ? void 0 : a.columnVisibility) ?? ((u = t.viewState) == null ? void 0 : u.columnVisibility), t.columns)
+    ), I = P(
+      xe((a == null ? void 0 : a.columnOrder) ?? ((p = t.viewState) == null ? void 0 : p.columnOrder), t.columns.map((n) => n.id))
+    ), E = P((a == null ? void 0 : a.columnSizing) ?? ((A = t.viewState) == null ? void 0 : A.columnSizing) ?? {}), N = _(() => t.columns.map((n) => ({
+      id: n.id,
+      accessorKey: n.accessorKey,
+      header: n.header,
       // c.cell 은 row 전체를 받는 우리 시그니처 — TanStack 의 CellContext 어댑터로 감쌈.
       // 없으면 undefined 로 둬 template 이 raw value(cell.getValue()) 로 폴백.
-      cell: t.cell ? ($) => t.cell($.row.original) : void 0,
-      enableSorting: t.sortable !== !1,
-      filterFn: ke(t.filterType),
+      cell: n.cell ? (D) => n.cell(D.row.original) : void 0,
+      enableSorting: n.sortable !== !1,
+      filterFn: ke(n.filterType),
       meta: {
-        align: t.align,
-        width: t.width,
-        minWidth: t.minWidth,
-        filterType: t.filterType,
-        selectOptions: t.selectOptions,
-        editable: t.editable
+        align: n.align,
+        width: n.width,
+        minWidth: n.minWidth,
+        filterType: n.filterType,
+        selectOptions: n.selectOptions,
+        editable: n.editable
       }
-    }))), O = ve({
+    }))), L = ve({
       get data() {
-        return n.data;
+        return t.data;
       },
       get columns() {
         return N.value;
       },
       state: {
         get sorting() {
-          return m.value;
+          return d.value;
         },
         get columnFilters() {
-          return D.value;
+          return x.value;
         },
         get columnVisibility() {
           return y.value;
         },
         get columnOrder() {
-          return L.value;
+          return I.value;
         },
         get columnSizing() {
-          return x.value;
+          return E.value;
         }
       },
-      onSortingChange: (t) => {
-        m.value = typeof t == "function" ? t(m.value) : t;
+      onSortingChange: (n) => {
+        d.value = typeof n == "function" ? n(d.value) : n;
       },
-      onColumnFiltersChange: (t) => {
-        D.value = typeof t == "function" ? t(D.value) : t;
+      onColumnFiltersChange: (n) => {
+        x.value = typeof n == "function" ? n(x.value) : n;
       },
-      onColumnVisibilityChange: (t) => {
-        y.value = typeof t == "function" ? t(y.value) : t;
+      onColumnVisibilityChange: (n) => {
+        y.value = typeof n == "function" ? n(y.value) : n;
       },
-      onColumnOrderChange: (t) => {
-        L.value = typeof t == "function" ? t(L.value) : t;
+      onColumnOrderChange: (n) => {
+        I.value = typeof n == "function" ? n(I.value) : n;
       },
-      onColumnSizingChange: (t) => {
-        x.value = typeof t == "function" ? t(x.value) : t;
+      onColumnSizingChange: (n) => {
+        E.value = typeof n == "function" ? n(E.value) : n;
       },
       getCoreRowModel: pe(),
-      getFilteredRowModel: fe(),
-      getSortedRowModel: ge(),
-      getRowId: (t) => String(t[n.rowKey]),
+      getFilteredRowModel: ge(),
+      getSortedRowModel: fe(),
+      getRowId: (n) => String(n[t.rowKey]),
       // TanStack 기본값은 숫자 컬럼을 desc-first 로 토글 — 그리드 관례(오름차순 먼저)에
       // 맞춰 모든 컬럼을 asc-first 로 통일.
       sortDescFirst: !1
     });
-    le([m, D, y, L, x], () => {
-      const t = {
-        sorting: m.value,
-        columnFilters: D.value,
+    le([d, x, y, I, E], () => {
+      const n = {
+        sorting: d.value,
+        columnFilters: x.value,
         columnVisibility: y.value,
-        columnOrder: L.value,
-        columnSizing: x.value
+        columnOrder: I.value,
+        columnSizing: E.value
       };
-      n.filterPersistKey && Se(n.filterPersistKey, t), i("update:viewState", t);
+      t.filterPersistKey && Se(t.filterPersistKey, n), o("update:viewState", n);
     }, { deep: !0 });
-    const h = w(() => typeof n.height == "number" ? `${n.height}px` : n.height ?? "600px"), I = w(() => O.getVisibleLeafColumns().map((t) => {
-      var E;
-      const $ = x.value[t.id];
-      return $ != null ? `${$}px` : ((E = t.columnDef.meta) == null ? void 0 : E.width) ?? "minmax(80px, 1fr)";
-    }).join(" ")), _ = de(null), V = ye(w(() => ({
-      count: O.getRowModel().rows.length,
-      getScrollElement: () => _.value,
-      estimateSize: () => n.estimateRowHeight ?? 36,
+    const w = _(() => typeof t.height == "number" ? `${t.height}px` : t.height ?? "600px"), O = _(() => L.getVisibleLeafColumns().map((n) => {
+      var V;
+      const D = E.value[n.id];
+      return D != null ? `${D}px` : ((V = n.columnDef.meta) == null ? void 0 : V.width) ?? "minmax(80px, 1fr)";
+    }).join(" ")), k = de(null), F = ye(_(() => ({
+      count: L.getRowModel().rows.length,
+      getScrollElement: () => k.value,
+      estimateSize: () => t.estimateRowHeight ?? 36,
       overscan: 10
-    }))), c = w(() => {
-      const t = V.value.getVirtualItems(), $ = O.getRowModel().rows;
-      return t.length === 0 && $.length > 0 ? $.map((E, b) => ({ key: E.id, index: b, start: b * (n.estimateRowHeight ?? 36), row: E })) : t.map((E) => ({ key: E.key, index: E.index, start: E.start, row: $[E.index] }));
+    }))), m = _(() => {
+      const n = F.value.getVirtualItems(), D = L.getRowModel().rows;
+      return n.length === 0 && D.length > 0 ? D.map((V, b) => ({ key: V.id, index: b, start: b * (t.estimateRowHeight ?? 36), row: V })) : n.map((V) => ({ key: V.key, index: V.index, start: V.start, row: D[V.index] }));
     });
-    function d(t, $, E) {
-      const b = t.slice(), [S] = b.splice($, 1);
-      return b.splice(E, 0, S), b;
+    function f(n, D, V) {
+      const b = n.slice(), [S] = b.splice(D, 1);
+      return b.splice(V, 0, S), b;
     }
-    function C(t, $) {
-      var E;
-      (E = t.dataTransfer) == null || E.setData("text/col", $);
+    function C(n, D) {
+      var V;
+      (V = n.dataTransfer) == null || V.setData("text/col", D);
     }
-    function F(t, $) {
+    function $(n, D) {
       var q;
-      const E = (q = t.dataTransfer) == null ? void 0 : q.getData("text/col");
-      if (!E || E === $) return;
-      const b = L.value.length ? [...L.value] : O.getAllLeafColumns().map((G) => G.id), S = b.indexOf(E), H = b.indexOf($);
-      S === -1 || H === -1 || O.setColumnOrder(d(b, S, H));
+      const V = (q = n.dataTransfer) == null ? void 0 : q.getData("text/col");
+      if (!V || V === D) return;
+      const b = I.value.length ? [...I.value] : L.getAllLeafColumns().map((G) => G.id), S = b.indexOf(V), H = b.indexOf(D);
+      S === -1 || H === -1 || L.setColumnOrder(f(b, S, H));
     }
-    return (t, $) => {
-      var E;
-      return r(), s(M, null, [
-        v("div", bt, [
-          ne(yt, { table: j(O) }, null, 8, ["table"]),
-          ne(rt, { table: j(O) }, null, 8, ["table"])
+    return (n, D) => {
+      var V;
+      return i(), s(M, null, [
+        g("div", wt, [
+          ne(ht, { table: j(L) }, null, 8, ["table"]),
+          ne(at, { table: j(L) }, null, 8, ["table"])
         ]),
-        v("div", {
+        g("div", {
           ref_key: "scrollEl",
-          ref: _,
+          ref: k,
           class: "airgrid",
-          style: W({ height: h.value, overflow: "auto", position: "relative" }),
+          style: W({ height: w.value, overflow: "auto", position: "relative" }),
           role: "grid"
         }, [
-          v("div", {
+          g("div", {
             class: "airgrid-header-row",
             role: "row",
-            style: W({ display: "grid", gridTemplateColumns: I.value, position: "sticky", top: 0 })
+            style: W({ display: "grid", gridTemplateColumns: O.value, position: "sticky", top: 0 })
           }, [
-            (r(!0), s(M, null, K(((E = j(O).getHeaderGroups()[0]) == null ? void 0 : E.headers) ?? [], (b) => {
+            (i(!0), s(M, null, K(((V = j(L).getHeaderGroups()[0]) == null ? void 0 : V.headers) ?? [], (b) => {
               var S;
-              return r(), s("div", {
+              return i(), s("div", {
                 key: b.id,
                 "data-col": b.column.id,
                 role: "columnheader",
                 draggable: "true",
                 style: W({ textAlign: ((S = b.column.columnDef.meta) == null ? void 0 : S.align) === "right" ? "right" : "left" }),
                 onDragstart: (H) => C(H, b.column.id),
-                onDragover: $[0] || ($[0] = J(() => {
+                onDragover: D[0] || (D[0] = J(() => {
                 }, ["prevent"])),
-                onDrop: (H) => F(H, b.column.id)
+                onDrop: (H) => $(H, b.column.id)
               }, [
-                b.isPlaceholder ? T("", !0) : (r(), X(Ge, {
+                b.isPlaceholder ? T("", !0) : (i(), X(Ye, {
                   key: 0,
                   header: b
                 }, null, 8, ["header"]))
-              ], 44, ht);
+              ], 44, _t);
             }), 128))
           ], 4),
-          v("div", {
-            style: W({ height: `${j(V).getTotalSize()}px`, width: "100%", position: "relative" })
+          g("div", {
+            style: W({ height: `${j(F).getTotalSize()}px`, width: "100%", position: "relative" })
           }, [
-            (r(!0), s(M, null, K(c.value, (b) => (r(), s("div", {
+            (i(!0), s(M, null, K(m.value, (b) => (i(), s("div", {
               key: b.row.id,
               "data-row": b.row.id,
-              class: Y(n.rowClass ? n.rowClass(b.row.original) : void 0),
+              class: Y(t.rowClass ? t.rowClass(b.row.original) : void 0),
               role: "row",
-              style: W({ position: "absolute", top: 0, left: 0, width: "100%", transform: `translateY(${b.start}px)`, display: "grid", gridTemplateColumns: I.value })
+              style: W({ position: "absolute", top: 0, left: 0, width: "100%", transform: `translateY(${b.start}px)`, display: "grid", gridTemplateColumns: O.value })
             }, [
-              (r(!0), s(M, null, K(b.row.getVisibleCells(), (S) => {
+              (i(!0), s(M, null, K(b.row.getVisibleCells(), (S) => {
                 var H, q;
-                return r(), s("div", {
+                return i(), s("div", {
                   key: S.id,
                   "data-col": S.column.id,
                   role: "gridcell",
                   style: W({ textAlign: ((H = S.column.columnDef.meta) == null ? void 0 : H.align) === "right" ? "right" : "left" }),
-                  onClick: (G) => k(S, b.row.original)
+                  onClick: (G) => h(S, b.row.original)
                 }, [
-                  p(S.column.id) ? me(t.$slots, "cell-" + S.column.id, {
+                  c(S.column.id) ? me(n.$slots, "cell-" + S.column.id, {
                     key: 0,
                     row: b.row.original,
                     value: S.getValue(),
                     column: S.column,
                     cell: S
-                  }, void 0, !0) : (q = S.column.columnDef.meta) != null && q.editable ? (r(), X(xe, {
+                  }, void 0, !0) : (q = S.column.columnDef.meta) != null && q.editable ? (i(), X(Ve, {
                     key: 1,
                     "model-value": S.getValue(),
-                    onCommit: (G) => i("cellEdit", b.row.id, S.column.id, G)
-                  }, null, 8, ["model-value", "onCommit"])) : S.column.columnDef.cell ? (r(), X(j(ae), {
+                    onCommit: (G) => o("cellEdit", b.row.id, S.column.id, G)
+                  }, null, 8, ["model-value", "onCommit"])) : S.column.columnDef.cell ? (i(), X(j(ae), {
                     key: 2,
                     render: S.column.columnDef.cell,
                     props: S.getContext()
-                  }, null, 8, ["render", "props"])) : (r(), s(M, { key: 3 }, [
+                  }, null, 8, ["render", "props"])) : (i(), s(M, { key: 3 }, [
                     ie(R(S.getValue()), 1)
                   ], 64))
-                ], 12, _t);
+                ], 12, Ct);
               }), 128))
-            ], 14, wt))), 128))
+            ], 14, kt))), 128))
           ], 4)
         ], 4)
       ], 64);
     };
   }
-}), Vt = /* @__PURE__ */ U(kt, [["__scopeId", "data-v-3b3e195f"]]), Ft = {
+}), $t = /* @__PURE__ */ U(St, [["__scopeId", "data-v-82063e01"]]), Dt = {
   sorting: [],
   columnFilters: [],
   columnVisibility: {},
   columnOrder: [],
   columnSizing: {}
-}, $t = "0.1.0";
+}, Nt = "0.1.0";
 export {
-  Vt as DataGrid,
-  Ft as EMPTY_VIEW_STATE,
-  $t as VERSION,
-  Et as clearPersistedState
+  $t as DataGrid,
+  Dt as EMPTY_VIEW_STATE,
+  Nt as VERSION,
+  Ft as clearPersistedState
 };

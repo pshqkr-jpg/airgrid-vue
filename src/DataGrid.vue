@@ -8,7 +8,7 @@ import { useVueTable, getCoreRowModel, getFilteredRowModel, getSortedRowModel,
 import { useVirtualizer } from "@tanstack/vue-virtual";
 import type { ColumnDef, ViewState, AirgridMeta } from "./types";
 import { pickFilterFn } from "./filterFns";
-import { loadState, saveState, type PersistedState } from "./persistence";
+import { loadState, saveState, mergeColumnOrder, mergeColumnVisibility, type PersistedState } from "./persistence";
 import EditableCell from "./EditableCell.vue";
 import HeaderCell from "./HeaderCell.vue";
 import HideColumnsMenu from "./HideColumnsMenu.vue";
@@ -50,9 +50,12 @@ function onCellClick(cell: { column: { id: string; columnDef: { meta?: CellMeta 
 const init = props.filterPersistKey ? loadState(props.filterPersistKey) : null;
 const sorting = ref<SortingState>(init?.sorting ?? props.viewState?.sorting ?? []);
 const columnFilters = ref<ColumnFiltersState>(init?.columnFilters ?? props.viewState?.columnFilters ?? []);
-const columnVisibility = ref<VisibilityState>(init?.columnVisibility ?? props.viewState?.columnVisibility
-  ?? Object.fromEntries(props.columns.filter(c => c.defaultVisible === false).map(c => [c.id, false])));
-const columnOrder = ref<ColumnOrderState>(init?.columnOrder ?? props.viewState?.columnOrder ?? []);
+// 저장된 설정(있으면)을 현재 컬럼 정의와 병합 — 새 기본 컬럼이 저장된 설정 때문에
+// 숨거나 끝으로 밀리지 않고 정의 위치에 나타나게(부류 재발 방지).
+const columnVisibility = ref<VisibilityState>(
+  mergeColumnVisibility(init?.columnVisibility ?? props.viewState?.columnVisibility, props.columns));
+const columnOrder = ref<ColumnOrderState>(
+  mergeColumnOrder(init?.columnOrder ?? props.viewState?.columnOrder, props.columns.map(c => c.id)));
 const columnSizing = ref<ColumnSizingState>(init?.columnSizing ?? props.viewState?.columnSizing ?? {});
 
 const tsColumns = computed<TSCol<TRow>[]>(() => props.columns.map((c) => ({
